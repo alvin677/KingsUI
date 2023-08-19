@@ -1,0 +1,870 @@
+-- I know I write terrible code // cedric0591
+
+local Kings = {};
+
+-- init
+local ScreenGui = Instance.new("ScreenGui");
+ScreenGui["Parent"] = game.Players.LocalPlayer.PlayerGui
+ScreenGui["Name"] = math.random(1, 1000);
+ScreenGui["ResetOnSpawn"] = false;
+
+function Kings.newWindow(windowName, windowSettings)
+	if windowName == nil then
+		windowName = "Window";
+	end
+	
+	-- the new window frame
+	local newWindow = Instance.new("Frame", ScreenGui);
+	newWindow["BorderSizePixel"] = 0;
+	newWindow["BackgroundColor3"] = Color3.fromRGB(50, 50, 50);
+	newWindow["Size"] = UDim2.new(0, 300, 0, 400);
+	newWindow["Position"] = UDim2.new(0.07388179004192352, 0, 0.15295256674289703, 0);
+	newWindow["Name"] = windowName;
+	
+	local function setWindowLight(integer)
+		newWindow["BackgroundColor3"] = Color3.fromRGB(integer, integer, integer);
+	end
+	
+	if windowSettings["windowSize"] then
+		newWindow["Size"] = windowSettings["windowSize"];
+	end
+	
+	if windowSettings["windowPosition"] then
+		newWindow["Position"] = windowSettings["windowPosition"];
+	end
+	
+	if windowSettings["draggable"] == true then
+		local UserInputService = game:GetService("UserInputService")
+		local runService = (game:GetService("RunService"));
+
+		local gui = ScreenGui[windowName];
+
+		local dragging
+		local dragInput
+		local dragStart
+		local startPos
+
+		local function Lerp(a, b, m)
+			return a + (b - a) * m
+		end;
+
+		local lastMousePos
+		local lastGoalPos
+		local DRAG_SPEED = (8); -- // The speed of the UI darg.
+		local function Update(dt)
+			if not (startPos) then return end;
+			if not (dragging) and (lastGoalPos) then
+				gui.Position = UDim2.new(startPos.X.Scale, Lerp(gui.Position.X.Offset, lastGoalPos.X.Offset, dt * DRAG_SPEED), startPos.Y.Scale, Lerp(gui.Position.Y.Offset, lastGoalPos.Y.Offset, dt * DRAG_SPEED))
+				return 
+			end;
+
+			local delta = (lastMousePos - UserInputService:GetMouseLocation())
+			local xGoal = (startPos.X.Offset - delta.X);
+			local yGoal = (startPos.Y.Offset - delta.Y);
+			lastGoalPos = UDim2.new(startPos.X.Scale, xGoal, startPos.Y.Scale, yGoal)
+			gui.Position = UDim2.new(startPos.X.Scale, Lerp(gui.Position.X.Offset, xGoal, dt * DRAG_SPEED), startPos.Y.Scale, Lerp(gui.Position.Y.Offset, yGoal, dt * DRAG_SPEED))
+		end;
+
+		gui.InputBegan:Connect(function(input)
+			if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+				dragging = true
+				dragStart = input.Position
+				startPos = gui.Position
+				lastMousePos = UserInputService:GetMouseLocation()
+
+				input.Changed:Connect(function()
+					if input.UserInputState == Enum.UserInputState.End then
+						dragging = false
+					end
+				end)
+			end
+		end)
+
+		gui.InputChanged:Connect(function(input)
+			if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+				dragInput = input
+			end
+		end)
+
+		runService.Heartbeat:Connect(Update)
+	end 
+	
+	local function toggleVisibility() 
+		if newWindow["Visible"] == false then
+			newWindow["Visible"] = true
+		elseif newWindow["Visible"] == true then
+			newWindow["Visible"] = false
+		end
+	end
+	
+	if windowSettings["hide"] == true then
+		newWindow["Visible"] = false;
+	end
+	
+	local newTitle = Instance.new("TextLabel", newWindow);
+	newTitle["BorderSizePixel"] = 0;
+	newTitle["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+	newTitle["FontFace"] = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.Bold, Enum.FontStyle.Normal);
+	newTitle["TextSize"] = 17;
+	newTitle["TextColor3"] = Color3.fromRGB(221, 221, 221);
+	newTitle["Size"] = UDim2.new(0, 238, 0, 25);
+	newTitle["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+	newTitle["Text"] = windowName;
+	newTitle["Name"] = "windowTitle";
+	newTitle["BackgroundTransparency"] = 1;
+	newTitle["Position"] = UDim2.new(0.10333333164453506, 0, 0.014999999664723873, 0);
+
+	local function setWindowName(name)
+		newTitle["Text"] = name;
+	end
+	
+	-- window title
+	if windowSettings["hideWindowTitle"] == true then
+		newTitle["Visible"] = false;
+	end
+	
+	-- window top right corner button
+	if windowSettings["noCloseButton"] ~= true then
+
+	local newWindowButton = Instance.new("ImageButton", newWindow);
+		newWindowButton["Image"] = [[rbxassetid://3926305904]];
+		newWindowButton["ImageRectSize"] = Vector2.new(24, 24);
+		newWindowButton["Size"] = UDim2.new(0, 25, 0, 25);
+		newWindowButton["Name"] = "windowButton";
+		newWindowButton["ImageRectOffset"] = Vector2.new(284, 4);
+		newWindowButton["Position"] = UDim2.new(0.8966666460037231, 0, 0.014999999664723873, 0);
+		newWindowButton["BackgroundTransparency"] = 1;
+	
+		newWindowButton.MouseButton1Click:connect(function()
+			newWindow:Destroy();
+		end)
+	end
+
+	local newWindowUICorner = Instance.new("UICorner", newWindow);
+	newWindowUICorner["CornerRadius"] = UDim.new(0, 7);
+	
+	local newWindowUIGradient = Instance.new("UIGradient", newWindow);
+	newWindowUIGradient["Rotation"] = 90;
+	newWindowUIGradient["Color"] = ColorSequence.new{ColorSequenceKeypoint.new(0.000, Color3.fromRGB(50, 50, 50)),ColorSequenceKeypoint.new(1.000, Color3.fromRGB(50, 50, 50))};
+	if (windowSettings["windowColor"]) then
+		newWindowUIGradient["Color"] = ColorSequence.new{ColorSequenceKeypoint.new(0.000, Color3.fromRGB(windowSettings["windowColor"][1], windowSettings["windowColor"][2], windowSettings["windowColor"][3])),ColorSequenceKeypoint.new(1.000, Color3.fromRGB(0, 0, 0))};
+	end
+	
+	-- window content
+	local newWindowContent = Instance.new("ScrollingFrame", newWindow);
+	newWindowContent["Active"] = true;
+	newWindowContent["BorderSizePixel"] = 0;
+	newWindowContent["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+	newWindowContent["BackgroundTransparency"] = 1;
+	newWindowContent["Size"] = UDim2.new(0, 300, 0, 369);
+	newWindowContent["ScrollBarImageColor3"] = Color3.fromRGB(71, 71, 71);
+	newWindowContent["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+	newWindowContent["ScrollBarThickness"] = 6;
+	newWindowContent["Position"] = UDim2.new(0, 0, 0.07750000059604645, 0);
+	newWindowContent["Name"] = "main";
+	
+	if windowSettings["windowSize"] then
+		newWindowContent["Size"] = windowSettings["windowSize"];
+		newWindowContent["Size"] = newWindowContent["Size"] + UDim2.new(0, 0, 0, -31)
+	end
+	
+	local function clear()
+		for i, v in pairs(newWindowContent:GetChildren()) do
+			if v:IsA("Frame") then 
+				v:Destroy();
+			end
+		end
+	end
+	
+	local newWindowContentUIPadding = Instance.new("UIPadding", newWindowContent);
+	newWindowContentUIPadding["PaddingTop"] = UDim.new(0, 8);
+	
+	local newWindowContentUIListLayout = Instance.new("UIListLayout", newWindowContent);
+	newWindowContentUIListLayout["HorizontalAlignment"] = Enum.HorizontalAlignment.Center;
+	newWindowContentUIListLayout["Padding"] = UDim.new(0, 7);
+	newWindowContentUIListLayout["SortOrder"] = Enum.SortOrder.LayoutOrder;
+	
+	if windowSettings["showShadows"] == true then
+
+		local newWindowShadowHolder = Instance.new("Frame", newWindow);
+		newWindowShadowHolder["ZIndex"] = 0;
+		newWindowShadowHolder["BackgroundTransparency"] = 1;
+		newWindowShadowHolder["Size"] = UDim2.new(1.056666612625122, 0, 1.037500023841858, 0);
+		newWindowShadowHolder["Position"] = UDim2.new(-0.02666666731238365, 0, -0.015999999552965164, 0);
+		newWindowShadowHolder["Name"] = "shadowHolder";
+
+		local newWindowUmbraShadow = Instance.new("ImageLabel", newWindowShadowHolder);
+		newWindowUmbraShadow["ZIndex"] = 0;
+		newWindowUmbraShadow["SliceCenter"] = Rect.new(10, 10, 118, 118);
+		newWindowUmbraShadow["ScaleType"] = Enum.ScaleType.Slice;
+		newWindowUmbraShadow["ImageColor3"] = Color3.fromRGB(0, 0, 0);
+		newWindowUmbraShadow["ImageTransparency"] = 0.8600000143051147;
+		newWindowUmbraShadow["AnchorPoint"] = Vector2.new(0.5, 0.5);
+		newWindowUmbraShadow["Image"] = [[rbxassetid://1316045217]];
+		newWindowUmbraShadow["Size"] = UDim2.new(1, 2, 1, 2);
+		newWindowUmbraShadow["Name"] = [[umbraShadow]];
+		newWindowUmbraShadow["BackgroundTransparency"] = 1;
+		newWindowUmbraShadow["Position"] = UDim2.new(0.5, 0, 0.5, 0);
+
+		local newWindowPenumbraShadow = Instance.new("ImageLabel", newWindowShadowHolder);
+		newWindowPenumbraShadow["ZIndex"] = 0;
+		newWindowPenumbraShadow["SliceCenter"] = Rect.new(10, 10, 118, 118);
+		newWindowPenumbraShadow["ScaleType"] = Enum.ScaleType.Slice;
+		newWindowPenumbraShadow["ImageColor3"] = Color3.fromRGB(0, 0, 0);
+		newWindowPenumbraShadow["ImageTransparency"] = 0.8799999952316284;
+		newWindowPenumbraShadow["AnchorPoint"] = Vector2.new(0.5, 0.5);
+		newWindowPenumbraShadow["Image"] = [[rbxassetid://1316045217]];
+		newWindowPenumbraShadow["Size"] = UDim2.new(1, 2, 1, 2);
+		newWindowPenumbraShadow["Name"] = [[penumbraShadow]];
+		newWindowPenumbraShadow["BackgroundTransparency"] = 1;
+		newWindowPenumbraShadow["Position"] = UDim2.new(0.5, 0, 0.5, 0);
+
+		local newWindowAmbientShadow = Instance.new("ImageLabel", newWindowShadowHolder);
+		newWindowAmbientShadow["ZIndex"] = 0;
+		newWindowAmbientShadow["SliceCenter"] = Rect.new(10, 10, 118, 118);
+		newWindowAmbientShadow["ScaleType"] = Enum.ScaleType.Slice;
+		newWindowAmbientShadow["ImageColor3"] = Color3.fromRGB(0, 0, 0);
+		newWindowAmbientShadow["ImageTransparency"] = 0.8799999952316284;
+		newWindowAmbientShadow["AnchorPoint"] = Vector2.new(0.5, 0.5);
+		newWindowAmbientShadow["Image"] = [[rbxassetid://1316045217]];
+		newWindowAmbientShadow["Size"] = UDim2.new(1, 2, 1, 2);
+		newWindowAmbientShadow["Name"] = [[ambientShadow]];
+		newWindowAmbientShadow["BackgroundTransparency"] = 1;
+		newWindowAmbientShadow["Position"] = UDim2.new(0.5, 0, 0.5, 0);
+		
+	end
+	
+	if windowSettings["pattern"] == true then
+	local newWindowBackground = Instance.new("ImageLabel", newWindow);
+	newWindowBackground["SliceCenter"] = Rect.new(0, 256, 0, 256);
+	newWindowBackground["ScaleType"] = Enum.ScaleType.Tile;
+	newWindowBackground["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+	newWindowBackground["ImageTransparency"] = 0.6000000238418579;
+	newWindowBackground["Image"] = [[rbxassetid://2151741365]];
+	newWindowBackground["TileSize"] = UDim2.new(0, 250, 0, 250);
+	newWindowBackground["Size"] = newWindow["Size"];
+	newWindowBackground["Name"] = [[background]];
+	newWindowBackground["BackgroundTransparency"] = 1;
+	newWindowBackground["ZIndex"] = 0;
+		
+	end
+	
+	if windowSettings["sidebar"] == true then
+		local newWindowSidebar = Instance.new("Frame", newWindow);
+		newWindowSidebar["BorderSizePixel"] = 0;
+		newWindowSidebar["BackgroundColor3"] = Color3.fromRGB(0, 0, 0);
+		newWindowSidebar["Size"] = UDim2.new(0, 130, 0, 400);
+		newWindowSidebar["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+		newWindowSidebar["Name"] = [[windowSidebar]];
+		newWindowSidebar["Visible"] = false;
+
+		local newWindowSidebarUICorner = Instance.new("UICorner", newWindowSidebar);
+		newWindowSidebarUICorner["CornerRadius"] = UDim.new(0, 7);
+
+		local newWindowSidebarTabs = Instance.new("ScrollingFrame", newWindowSidebar);
+		newWindowSidebarTabs["Active"] = true;
+		newWindowSidebarTabs["BorderSizePixel"] = 0;
+		newWindowSidebarTabs["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+		newWindowSidebarTabs["BackgroundTransparency"] = 1;
+		newWindowSidebarTabs["Size"] = UDim2.new(0, 130, 0, 355);
+		newWindowSidebarTabs["ScrollBarImageColor3"] = Color3.fromRGB(0, 0, 0);
+		newWindowSidebarTabs["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+		newWindowSidebarTabs["Position"] = UDim2.new(0, 0, 0.11249999701976776, 0);
+		newWindowSidebarTabs["Name"] = [[Tabs]];
+
+		local newWindowSidebarTabsUIListLayout = Instance.new("UIListLayout", newWindowSidebarTabs);
+		newWindowSidebarTabsUIListLayout["Padding"] = UDim.new(0, 4);
+		newWindowSidebarTabsUIListLayout["SortOrder"] = Enum.SortOrder.LayoutOrder;
+
+		local newWindowSidebarTabsUIPadding = Instance.new("UIPadding", newWindowSidebarTabs);
+		newWindowSidebarTabsUIPadding["PaddingLeft"] = UDim.new(0, 4);
+		
+		local newWindowSidebarButton = Instance.new("ImageButton", newWindow);
+		newWindowSidebarButton["LayoutOrder"] = 6;
+		newWindowSidebarButton["Image"] = [[rbxassetid://3926307971]];
+		newWindowSidebarButton["ImageRectSize"] = Vector2.new(36, 36);
+		newWindowSidebarButton["Size"] = UDim2.new(0, 25, 0, 25);
+		newWindowSidebarButton["Name"] = [[windowIcon]];
+		newWindowSidebarButton["ImageRectOffset"] = Vector2.new(404, 44);
+		newWindowSidebarButton["Position"] = UDim2.new(0.019611308351159096, 0, 0.013276862911880016, 0);
+		newWindowSidebarButton["BackgroundTransparency"] = 1;
+		newWindowSidebarButton.MouseButton1Click:connect(function()
+			if newWindowSidebar.Visible == false then
+				newWindowSidebar.Visible = true
+			elseif newWindowSidebar.Visible == true then
+				newWindowSidebar.Visible = false
+			end
+		end)
+		
+		if windowSettings["sidebarMainName"] == nil then
+			windowSettings["sidebarMainName"] = "main";
+		end
+		
+		local newWindowSidebarTab = Instance.new("TextButton", newWindowSidebarTabs);
+		newWindowSidebarTab["BorderSizePixel"] = 0;
+		newWindowSidebarTab["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+		newWindowSidebarTab["TextSize"] = 16;
+		newWindowSidebarTab["FontFace"] = Font.new([[rbxasset://fonts/families/Ubuntu.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
+		newWindowSidebarTab["TextColor3"] = Color3.fromRGB(221, 221, 221);
+		newWindowSidebarTab["Size"] = UDim2.new(0, 124, 0, 40);
+		newWindowSidebarTab["Name"] = [[tab]];
+		newWindowSidebarTab["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+		newWindowSidebarTab["Text"] = windowSettings["sidebarMainName"];
+		newWindowSidebarTab["Position"] = UDim2.new(0.04525686427950859, 0, 0.09749999642372131, 0);
+		newWindowSidebarTab["BackgroundTransparency"] = 1;
+		newWindowSidebarTab.MouseButton1Click:connect(function() 
+			for i, v in pairs(newWindow:GetChildren()) do
+				if v:IsA("ScrollingFrame") then
+					v.Visible = false
+				end
+			end
+
+			newWindowContent.Visible = true;
+		end)
+
+		local newWindowSidebarTabUnderline = Instance.new("Frame", newWindowSidebarTab);
+		newWindowSidebarTabUnderline["BorderSizePixel"] = 0;
+		newWindowSidebarTabUnderline["BackgroundColor3"] = Color3.fromRGB(151, 151, 151);
+		newWindowSidebarTabUnderline["Size"] = UDim2.new(0, 110, 0, 1);
+		newWindowSidebarTabUnderline["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+		newWindowSidebarTabUnderline["Position"] = UDim2.new(0.03846153989434242, 0, 1, 0);
+		newWindowSidebarTabUnderline["Name"] = [[underline]];
+
+		local newWindowSidebarTabIcon = Instance.new("ImageButton", newWindowSidebarTab);
+		newWindowSidebarTabIcon["ImageTransparency"] = 0.10000000149011612;
+		newWindowSidebarTabIcon["Image"] = [[rbxassetid://3926305904]];
+		newWindowSidebarTabIcon["ImageRectSize"] = Vector2.new(36, 36);
+		newWindowSidebarTabIcon["Size"] = UDim2.new(0, 25, 0, 25);
+		newWindowSidebarTabIcon["Name"] = [[home]];
+		newWindowSidebarTabIcon["ImageRectOffset"] = Vector2.new(964, 204);
+		newWindowSidebarTabIcon["Position"] = UDim2.new(0.04615384712815285, 0, 0.15000000596046448, 0);
+		newWindowSidebarTabIcon["BackgroundTransparency"] = 1;
+	end
+	
+	return {
+		newWindow;
+		toggleVisibility = toggleVisibility;
+		clear = clear;
+		
+		setWindowLight = setWindowLight;
+		setWindowName = setWindowName;
+	}
+end
+
+function Kings.newTextElement(window, tab, text)
+	local newWindowElementText = Instance.new("Frame", window[1][tab]);
+	newWindowElementText["BorderSizePixel"] = 0;
+	newWindowElementText["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+	newWindowElementText["BackgroundTransparency"] = 0.9;
+	newWindowElementText["Size"] = UDim2.new(0, 274, 0, 80);
+	newWindowElementText["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+	newWindowElementText["Position"] = UDim2.new(0.04333333298563957, 0, 0.13019390404224396, 0);
+	newWindowElementText["Name"] = "windowElementText";
+
+	local newWindowElementTextUICorner = Instance.new("UICorner", newWindowElementText);
+	newWindowElementTextUICorner["CornerRadius"] = UDim.new(0, 7);
+
+	local newWindowElementTextUIStroke = Instance.new("UIStroke", newWindowElementText);
+	newWindowElementTextUIStroke["Color"] = Color3.fromRGB(20, 20, 20);
+	newWindowElementTextUIStroke["Thickness"] = 0.51;
+
+	local newWindowElementTextTextLabel = Instance.new("TextLabel", newWindowElementText);
+	newWindowElementTextTextLabel["TextWrapped"] = true;
+	newWindowElementTextTextLabel["BorderSizePixel"] = 0;
+	newWindowElementTextTextLabel["TextYAlignment"] = Enum.TextYAlignment.Top;
+	newWindowElementTextTextLabel["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+	newWindowElementTextTextLabel["TextXAlignment"] = Enum.TextXAlignment.Left;
+	newWindowElementTextTextLabel["FontFace"] = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.Bold, Enum.FontStyle.Normal);
+	newWindowElementTextTextLabel["TextSize"] = 15;
+	newWindowElementTextTextLabel["TextColor3"] = Color3.fromRGB(221, 221, 221);
+	newWindowElementTextTextLabel["Size"] = UDim2.new(0, 253, 0, 68);
+	newWindowElementTextTextLabel["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+	newWindowElementTextTextLabel["Text"] = text;
+	newWindowElementTextTextLabel["BackgroundTransparency"] = 1;
+	newWindowElementTextTextLabel["Position"] = UDim2.new(0.040145985782146454, 0, 0.07500000298023224, 0);
+	
+	-- element functions
+	local function setText(text)
+		newWindowElementTextTextLabel["Text"] = text;
+	end
+	
+	local function getText()
+		return newWindowElementTextTextLabel["Text"];
+	end
+	
+	local function setOutlineColor(color)
+		newWindowElementTextUIStroke["Color"] = color;
+	end
+	
+	local function setBackgroundColor(color)
+		newWindowElementText["BackgroundColor3"] = color;
+	end
+	
+	local function setTransparency(integer) 
+		newWindowElementText["BackgroundTransparency"] = integer;
+	end
+	
+	return {
+		newWindowElementText;
+		setText = setText;
+		getText = getText;
+		setOutlineColor = setOutlineColor;
+		setBackgroundColor = setBackgroundColor;
+		setTransparency = setTransparency;
+	}
+end
+
+function Kings.newButtonElement(window, tab, text, buttonType)
+	--window = window[1];
+	
+	local buttonIconId, buttonIconOffset, buttonIconSize, buttonIconColor;
+	
+	if buttonType == nil or buttonType == 0 then
+		buttonIconId = "rbxassetid://3926305904";
+		buttonIconOffset = Vector2.new(604, 764);
+		buttonIconSize = Vector2.new(36, 36);
+		buttonIconColor = Color3.fromRGB(126, 255, 163);
+		
+	elseif buttonType == 1 then
+		buttonIconId = "rbxassetid://3926305904";
+		buttonIconOffset = Vector2.new(644, 724);
+		buttonIconSize = Vector2.new(36, 36);
+		buttonIconColor = Color3.fromRGB(220, 80, 80);
+		
+	elseif buttonType == 2 then
+		buttonIconId = "rbxassetid://3926305904";
+		buttonIconOffset = Vector2.new(116, 4);
+		buttonIconSize = Vector2.new(24, 24);
+		buttonIconColor = Color3.fromRGB(206, 220, 53);
+	end
+	
+	local newWindowElementButton = Instance.new("Frame", window[1][tab]);
+	newWindowElementButton["BorderSizePixel"] = 0;
+	newWindowElementButton["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+	newWindowElementButton["BackgroundTransparency"] = 0.8999999761581421;
+	newWindowElementButton["Size"] = UDim2.new(window[1]["Size"].X.Scale, window[1]["Size"].X.Offset -26, 0, 40);
+	newWindowElementButton["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+	newWindowElementButton["Position"] = UDim2.new(0.04333333298563957, 0, 0.0379403792321682, 0);
+	newWindowElementButton["Name"] = "windowElementButton";
+	
+	local newWindowElementButtonUIStroke = Instance.new("UIStroke", newWindowElementButton);
+	newWindowElementButtonUIStroke["Color"] = Color3.fromRGB(20, 20, 20);
+	newWindowElementButtonUIStroke["Thickness"] = 0.5099999904632568;
+
+	local newWindowElementButtonImage = Instance.new("ImageButton", newWindowElementButton);
+	newWindowElementButtonImage["ImageColor3"] = buttonIconColor;
+	newWindowElementButtonImage["LayoutOrder"] = 7;
+	newWindowElementButtonImage["Image"] = buttonIconId;
+	newWindowElementButtonImage["ImageRectSize"] = buttonIconSize;
+	newWindowElementButtonImage["Size"] = UDim2.new(0, 25, 0, 25);
+	newWindowElementButtonImage["Name"] = [[icon]];
+	newWindowElementButtonImage["ImageRectOffset"] = buttonIconOffset;
+	newWindowElementButtonImage["Position"] = UDim2.new(0.8722627758979797, 0, 0.17499999701976776, 0);
+	newWindowElementButtonImage["BackgroundTransparency"] = 1;
+	
+	local newWindowElementButtonButton = Instance.new("TextButton", newWindowElementButton);
+	newWindowElementButtonButton["TextWrapped"] = true;
+	newWindowElementButtonButton["BorderSizePixel"] = 0;
+	newWindowElementButtonButton["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+	newWindowElementButtonButton["FontFace"] = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.Bold, Enum.FontStyle.Normal);
+	newWindowElementButtonButton["TextSize"] = 15;
+	newWindowElementButtonButton["TextColor3"] = Color3.fromRGB(221, 221, 221);
+	--newWindowElementButtonButton["Size"] = UDim2.new(0, 274, 0, 40);
+	newWindowElementButtonButton["Size"] = UDim2.new(window[1]["Size"].X.Scale, window[1]["Size"].X.Offset -26, 0, 40);
+	newWindowElementButtonButton["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+	newWindowElementButtonButton["Text"] = text;
+	newWindowElementButtonButton["BackgroundTransparency"] = 1;
+
+	local newWindowElementButtonUICorner = Instance.new("UICorner", newWindowElementButton);
+	newWindowElementButtonUICorner["CornerRadius"] = UDim.new(0, 7);
+	
+	-- element functions
+	local function callback(func)
+		newWindowElementButtonButton.MouseButton1Click:connect(func)
+		newWindowElementButtonImage.MouseButton1Click:connect(func)
+	end
+	
+	local function setText(text)
+		newWindowElementButtonButton["Text"] = text;
+	end
+
+	local function getText()
+		return newWindowElementButtonButton["Text"];
+	end
+
+	local function setOutlineColor(color)
+		newWindowElementButtonUIStroke["Color"] = color;
+	end
+
+	local function setBackgroundColor(color)
+		newWindowElementButton["BackgroundColor3"] = color;
+	end
+
+	local function setTransparency(integer) 
+		newWindowElementButton["BackgroundTransparency"] = integer;
+	end	
+	
+	return {
+		newWindowElementButton;
+		callback = callback;
+		
+		setText = setText;
+		getText = getText;
+		setOutlineColor = setOutlineColor;
+		setBackgroundColor = setBackgroundColor;
+		setTransparency = setTransparency;
+	}
+end
+
+function Kings.newCategory(window, tab, name)
+	local newWindowCategory = Instance.new("Frame", window[1][tab]);
+	newWindowCategory["BorderSizePixel"] = 0;
+	newWindowCategory["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+	newWindowCategory["BackgroundTransparency"] = 1;
+	newWindowCategory["Size"] = UDim2.new(0, 275, 0, 40);
+	newWindowCategory["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+	newWindowCategory["Position"] = UDim2.new(0.0416666679084301, 0, 0.4487534761428833, 0);
+	newWindowCategory["Name"] = [[Category]];
+
+	local newWindowCategoryTextLabel = Instance.new("TextLabel", newWindowCategory);
+	newWindowCategoryTextLabel["BorderSizePixel"] = 0;
+	newWindowCategoryTextLabel["TextYAlignment"] = Enum.TextYAlignment.Bottom;
+	newWindowCategoryTextLabel["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+	newWindowCategoryTextLabel["TextXAlignment"] = Enum.TextXAlignment.Left;
+	newWindowCategoryTextLabel["FontFace"] = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.Bold, Enum.FontStyle.Normal);
+	newWindowCategoryTextLabel["TextSize"] = 16;
+	newWindowCategoryTextLabel["TextColor3"] = Color3.fromRGB(91, 91, 91);
+	newWindowCategoryTextLabel["Size"] = UDim2.new(0, 274, 0, 40);
+	newWindowCategoryTextLabel["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+	newWindowCategoryTextLabel["Text"] = name;
+	newWindowCategoryTextLabel["BackgroundTransparency"] = 1;
+	
+	return {
+		newWindowCategory;
+	}
+end
+
+function Kings.newSwitchElement(window, tab, text, state)
+	local stateColor, stateIcon, stateOffset;
+	
+	stateColor = Color3.fromRGB(116, 116, 116);
+	stateIcon = "rbxassetid://3926307971";
+	stateOffset = Vector2.new(804, 124);
+	
+	if state == true then
+		stateColor = Color3.fromRGB(118, 150, 255);
+		stateIcon = "rbxassetid://3926307971";
+		stateOffset = Vector2.new(764, 244);
+	end
+	
+	local newWindowElementSwitch = Instance.new("Frame", window[1][tab]);
+	newWindowElementSwitch["BorderSizePixel"] = 0;
+	newWindowElementSwitch["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+	newWindowElementSwitch["BackgroundTransparency"] = 0.8999999761581421;
+	newWindowElementSwitch["Size"] = UDim2.new(0, 274, 0, 40);
+	newWindowElementSwitch["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+	newWindowElementSwitch["Position"] = UDim2.new(0.04333333298563957, 0, 0.0379403792321682, 0);
+	newWindowElementSwitch["Name"] = [[windowElementSwitch]];
+
+	local newWindowElementSwitchUICorner = Instance.new("UICorner", newWindowElementSwitch);
+	newWindowElementSwitchUICorner["CornerRadius"] = UDim.new(0, 7);
+
+	local newWindowElementSwitchUIStroke = Instance.new("UIStroke", newWindowElementSwitch);
+	newWindowElementSwitchUIStroke["Color"] = Color3.fromRGB(20, 20, 20);
+	newWindowElementSwitchUIStroke["Thickness"] = 0.5099999904632568;
+
+	local newWindowElementSwitchTextLabel = Instance.new("TextButton", newWindowElementSwitch);
+	newWindowElementSwitchTextLabel["TextWrapped"] = true;
+	newWindowElementSwitchTextLabel["BorderSizePixel"] = 0;
+	newWindowElementSwitchTextLabel["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+	newWindowElementSwitchTextLabel["FontFace"] = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.Bold, Enum.FontStyle.Normal);
+	newWindowElementSwitchTextLabel["TextSize"] = 15;
+	newWindowElementSwitchTextLabel["TextColor3"] = Color3.fromRGB(221, 221, 221);
+	newWindowElementSwitchTextLabel["Size"] = UDim2.new(0, 274, 0, 40);
+	newWindowElementSwitchTextLabel["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+	newWindowElementSwitchTextLabel["Text"] = text;
+	newWindowElementSwitchTextLabel["BackgroundTransparency"] = 1;
+	
+	local newWindowElementSwitchState = Instance.new("ImageButton", newWindowElementSwitch);
+	print(stateColor);
+	newWindowElementSwitchState["ImageColor3"] = stateColor;
+	newWindowElementSwitchState["LayoutOrder"] = 20;
+	newWindowElementSwitchState["Image"] = stateIcon;
+	newWindowElementSwitchState["ImageRectSize"] = Vector2.new(36, 36);
+	newWindowElementSwitchState["Size"] = UDim2.new(0, 25, 0, 25);
+	newWindowElementSwitchState["Name"] = "off";
+	newWindowElementSwitchState["ImageRectOffset"] = stateOffset;
+	newWindowElementSwitchState["Position"] = UDim2.new(0.8722627758979797, 0, 0.17499999701976776, 0);
+	newWindowElementSwitchState["BackgroundTransparency"] = 1;
+	newWindowElementSwitchState["Visible"] = true;
+	
+	-- element functions
+	local function switch()
+		if state == true then
+			state = false;
+			
+			newWindowElementSwitchState["ImageColor3"] = Color3.fromRGB(116, 116, 116);
+			newWindowElementSwitchState["Image"] = "rbxassetid://3926307971";
+			newWindowElementSwitchState["ImageRectOffset"] = Vector2.new(804, 124);
+		elseif state == false then
+			state = true;
+			
+			newWindowElementSwitchState["ImageColor3"] = Color3.fromRGB(118, 150, 255);
+			newWindowElementSwitchState["Image"] = "rbxassetid://3926307971";
+			newWindowElementSwitchState["ImageRectOffset"] = Vector2.new(764, 244);
+
+		end
+	end
+	
+	local function callback(func)
+		newWindowElementSwitchTextLabel.MouseButton1Click:connect(func)
+		newWindowElementSwitchState.MouseButton1Click:connect(func)
+	end
+
+	local function setText(text)
+		newWindowElementSwitchTextLabel["Text"] = text;
+	end
+
+	local function getText()
+		return newWindowElementSwitchTextLabel["Text"];
+	end
+
+	local function setOutlineColor(color)
+		newWindowElementSwitchUIStroke["Color"] = color;
+	end
+
+	local function setBackgroundColor(color)
+		newWindowElementSwitch["BackgroundColor3"] = color;
+	end
+
+	local function setTransparency(integer) 
+		newWindowElementSwitch["BackgroundTransparency"] = integer;
+	end	
+	
+	if state == true then
+		newWindowElementSwitchState["ImageColor3"] = Color3.fromRGB(118, 150, 255);
+		newWindowElementSwitchState["Image"] = "rbxassetid://3926307971";
+		newWindowElementSwitchState["ImageRectOffset"] = Vector2.new(764, 244);
+	elseif state == false then
+		newWindowElementSwitchState["ImageColor3"] = Color3.fromRGB(116, 116, 116);
+		newWindowElementSwitchState["Image"] = "rbxassetid://3926307971";
+		newWindowElementSwitchState["ImageRectOffset"] = Vector2.new(804, 124);
+	end
+	
+	local function getState()
+		return state;
+	end
+	
+	local function setState(newState)
+		state = newState;
+		
+		if state == true then
+			newWindowElementSwitchState["ImageColor3"] = Color3.fromRGB(118, 150, 255);
+			newWindowElementSwitchState["Image"] = "rbxassetid://3926307971";
+			newWindowElementSwitchState["ImageRectOffset"] = Vector2.new(764, 244);
+		elseif state == false then
+			newWindowElementSwitchState["ImageColor3"] = Color3.fromRGB(116, 116, 116);
+			newWindowElementSwitchState["Image"] = "rbxassetid://3926307971";
+			newWindowElementSwitchState["ImageRectOffset"] = Vector2.new(804, 124);
+		end
+	end
+	
+	return {
+		newWindowElementSwitch;
+		callback = callback;
+
+		setText = setText;
+		getText = getText;
+		setOutlineColor = setOutlineColor;
+		setBackgroundColor = setBackgroundColor;
+		setTransparency = setTransparency;
+		getState = getState;
+		setState = setState;
+		switch = switch;
+	}
+end
+
+function Kings.newInputElement(window, tab, text, placeholder)
+	local newWindowElementInput = Instance.new("Frame", window[1][tab]);
+	newWindowElementInput["BorderSizePixel"] = 0;
+	newWindowElementInput["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+	newWindowElementInput["BackgroundTransparency"] = 0.8999999761581421;
+	newWindowElementInput["Size"] = UDim2.new(0, 274, 0, 60);
+	newWindowElementInput["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+	newWindowElementInput["Position"] = UDim2.new(0.04333333298563957, 0, 0.5817174315452576, 0);
+	newWindowElementInput["Name"] = [[windowElementInput]];
+
+	local newWindowElementInputUIStroke = Instance.new("UIStroke", newWindowElementInput);
+	newWindowElementInputUIStroke["Color"] = Color3.fromRGB(20, 20, 20);
+	newWindowElementInputUIStroke["Thickness"] = 0.5099999904632568;
+
+	local newWindowElementInputTextLabel = Instance.new("TextLabel", newWindowElementInput);
+	newWindowElementInputTextLabel["TextWrapped"] = true;
+	newWindowElementInputTextLabel["BorderSizePixel"] = 0;
+	newWindowElementInputTextLabel["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+	newWindowElementInputTextLabel["FontFace"] = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.Bold, Enum.FontStyle.Normal);
+	newWindowElementInputTextLabel["TextSize"] = 15;
+	newWindowElementInputTextLabel["TextColor3"] = Color3.fromRGB(221, 221, 221);
+	newWindowElementInputTextLabel["Size"] = UDim2.new(0, 274, 0, 35);
+	newWindowElementInputTextLabel["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+	newWindowElementInputTextLabel["Text"] = text;
+	newWindowElementInputTextLabel["BackgroundTransparency"] = 1;
+
+	local newWindowElementInputIcon = Instance.new("ImageButton", newWindowElementInput);
+	newWindowElementInputIcon["ImageColor3"] = Color3.fromRGB(189, 72, 255);
+	newWindowElementInputIcon["Image"] = [[rbxassetid://3926305904]];
+	newWindowElementInputIcon["ImageRectSize"] = Vector2.new(36, 36);
+	newWindowElementInputIcon["Size"] = UDim2.new(0, 25, 0, 25);
+	newWindowElementInputIcon["Name"] = [[icon]];
+	newWindowElementInputIcon["ImageRectOffset"] = Vector2.new(764, 84);
+	newWindowElementInputIcon["Position"] = UDim2.new(0.8705109357833862, 0, 0.16999968886375427, 0);
+	newWindowElementInputIcon["BackgroundTransparency"] = 1;
+
+	local newWindowElementInputTextBox = Instance.new("TextBox", newWindowElementInput);
+	newWindowElementInputTextBox["BorderSizePixel"] = 0;
+	newWindowElementInputTextBox["TextSize"] = 15;
+	newWindowElementInputTextBox["BackgroundColor3"] = Color3.fromRGB(101, 101, 101);
+	newWindowElementInputTextBox["TextColor3"] = Color3.fromRGB(255, 255, 255);
+	newWindowElementInputTextBox["FontFace"] = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.Regular, Enum.FontStyle.Italic);
+	newWindowElementInputTextBox["BackgroundTransparency"] = 1;
+	newWindowElementInputTextBox["PlaceholderText"] = placeholder;
+	newWindowElementInputTextBox["Size"] = UDim2.new(0, 274, 0, 25);
+	newWindowElementInputTextBox["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+	newWindowElementInputTextBox["Text"] = [[]];
+	newWindowElementInputTextBox["Position"] = UDim2.new(0, 0, 0.5833333134651184, 0);
+
+	local newWindowElementInputTextBoxUICorner = Instance.new("UICorner", newWindowElementInputTextBox);
+	newWindowElementInputTextBoxUICorner["CornerRadius"] = UDim.new(0, 7);
+
+	local newWindowElementInputUICorner = Instance.new("UICorner", newWindowElementInput);
+	newWindowElementInputUICorner["CornerRadius"] = UDim.new(0, 7);
+	
+	local function setInput(inp)
+		newWindowElementInputTextBox["Text"] = inp;
+	end
+	
+	local function getInput()
+		return newWindowElementInputTextBox["Text"];
+	end
+	
+	local function setText(text)
+		newWindowElementInputTextLabel["Text"] = text;
+	end
+	
+	local function setOutlineColor(color)
+		newWindowElementInputUIStroke["Color"] = color;
+	end
+
+	local function setBackgroundColor(color)
+		newWindowElementInput["BackgroundColor3"] = color;
+	end
+
+	local function setTransparency(integer) 
+		newWindowElementInput["BackgroundTransparency"] = integer;
+	end	
+	
+	return {
+		newWindowElementInput;
+		
+		setInput = setInput;
+		getInput = getInput;
+		setText = setText;
+		setOutlineColor = setOutlineColor;
+		setBackgroundColor = setBackgroundColor;
+		setTransparency = setTransparency;
+	}
+end
+
+function Kings.newTab(window)
+	local newWindowContent = Instance.new("ScrollingFrame", window[1]);
+	newWindowContent["Active"] = true;
+	newWindowContent["BorderSizePixel"] = 0;
+	newWindowContent["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+	newWindowContent["BackgroundTransparency"] = 1;
+	newWindowContent["Size"] = UDim2.new(0, 300, 0, 369);
+	newWindowContent["Size"] = newWindowContent["Size"] + UDim2.new(0, 0, 0, -31);
+	newWindowContent["ScrollBarImageColor3"] = Color3.fromRGB(71, 71, 71);
+	newWindowContent["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+	newWindowContent["ScrollBarThickness"] = 6;
+	newWindowContent["Position"] = UDim2.new(0, 0, 0.07750000059604645, 0);
+	newWindowContent["Name"] = "newTab";
+	newWindowContent["Visible"] = false;
+
+	local function clear()
+		for i, v in pairs(newWindowContent:GetChildren()) do
+			if v:IsA("Frame") then 
+				v:Destroy();
+			end
+		end
+	end
+
+	local newWindowContentUIPadding = Instance.new("UIPadding", newWindowContent);
+	newWindowContentUIPadding["PaddingTop"] = UDim.new(0, 8);
+
+	local newWindowContentUIListLayout = Instance.new("UIListLayout", newWindowContent);
+	newWindowContentUIListLayout["HorizontalAlignment"] = Enum.HorizontalAlignment.Center;
+	newWindowContentUIListLayout["Padding"] = UDim.new(0, 7);
+	newWindowContentUIListLayout["SortOrder"] = Enum.SortOrder.LayoutOrder;	
+	
+	return {
+		newWindowContent;
+		clear = clear;
+	}
+end
+
+function Kings.newSidebarOption(window, tabToView, text, icon)
+	window = window[1];
+	
+	local newWindowSidebarTab = Instance.new("TextButton", window["windowSidebar"]["Tabs"]);
+	newWindowSidebarTab["BorderSizePixel"] = 0;
+	newWindowSidebarTab["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+	newWindowSidebarTab["TextSize"] = 16;
+	newWindowSidebarTab["FontFace"] = Font.new([[rbxasset://fonts/families/Ubuntu.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
+	newWindowSidebarTab["TextColor3"] = Color3.fromRGB(221, 221, 221);
+	newWindowSidebarTab["Size"] = UDim2.new(0, 124, 0, 40);
+	newWindowSidebarTab["Name"] = [[tab]];
+	newWindowSidebarTab["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+	newWindowSidebarTab["Text"] = text;
+	newWindowSidebarTab["Position"] = UDim2.new(0.04525686427950859, 0, 0.09749999642372131, 0);
+	newWindowSidebarTab["BackgroundTransparency"] = 1;
+	newWindowSidebarTab.MouseButton1Click:connect(function()
+		for i, v in pairs(window:GetChildren()) do
+			if v:IsA("ScrollingFrame") then
+				v.Visible = false
+			end
+		end
+
+		tabToView.Visible = true;
+	end)
+	
+
+	local newWindowSidebarTabUnderline = Instance.new("Frame", newWindowSidebarTab);
+	newWindowSidebarTabUnderline["BorderSizePixel"] = 0;
+	newWindowSidebarTabUnderline["BackgroundColor3"] = Color3.fromRGB(151, 151, 151);
+	newWindowSidebarTabUnderline["Size"] = UDim2.new(0, 110, 0, 1);
+	newWindowSidebarTabUnderline["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+	newWindowSidebarTabUnderline["Position"] = UDim2.new(0.03846153989434242, 0, 1, 0);
+	newWindowSidebarTabUnderline["Name"] = [[underline]];
+
+	local newWindowSidebarTabIcon = Instance.new("ImageButton", newWindowSidebarTab);
+	newWindowSidebarTabIcon["ImageTransparency"] = 0.10000000149011612;
+	newWindowSidebarTabIcon["Image"] = [[rbxassetid://3926305904]];
+	newWindowSidebarTabIcon["ImageRectSize"] = Vector2.new(36, 36);
+	newWindowSidebarTabIcon["Size"] = UDim2.new(0, 25, 0, 25);
+	newWindowSidebarTabIcon["Name"] = [[home]];
+	newWindowSidebarTabIcon["ImageRectOffset"] = Vector2.new(964, 204);
+	newWindowSidebarTabIcon["Position"] = UDim2.new(0.04615384712815285, 0, 0.15000000596046448, 0);
+	newWindowSidebarTabIcon["BackgroundTransparency"] = 1;
+	
+	local function callback(func)
+		newWindowSidebarTab.MouseButton1Click:connect(func)
+		newWindowSidebarTabIcon.MouseButton1Click:connect(func)
+	end
+	
+	return {
+		newWindowSidebarTab;
+		callback = callback;
+	}
+end
+
+return Kings;
