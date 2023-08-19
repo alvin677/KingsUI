@@ -3,12 +3,10 @@ A Roblox UI Library with a bunch of features.
 
 Will add:
 
-* animations
 * slider
 * dropdown
 * key input
 * search bar
-* automatic scrollingframe height
 * element descriptions?
 * icon list
 * more general functions for each element
