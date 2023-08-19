@@ -180,7 +180,7 @@ function Kings.newWindow(windowName, windowSettings)
 		end
 		
 		newWindowContent.CanvasSize = UDim2.new(0, 0, 0, canvSize+80)
-		wait(1)
+		wait(5)
 		automaticHeight()
 	end
 	spawn(automaticHeight);
@@ -841,7 +841,22 @@ function Kings.newTab(window)
 	newWindowContent["Position"] = UDim2.new(0, 0, 0.07750000059604645, 0);
 	newWindowContent["Name"] = "newTab";
 	newWindowContent["Visible"] = false;
+	
+	local function automaticHeight()
+		local canvSize = 0;
 
+		for i, v in pairs(newWindowContent:GetChildren()) do
+			if v:IsA("Frame") then
+				canvSize = canvSize + v.Size.Y.Offset;
+			end
+		end
+
+		newWindowContent.CanvasSize = UDim2.new(0, 0, 0, canvSize+80)
+		wait(5)
+		automaticHeight()
+	end
+	spawn(automaticHeight);
+	
 	local function clear()
 		for i, v in pairs(newWindowContent:GetChildren()) do
 			if v:IsA("Frame") then 
@@ -897,16 +912,31 @@ function Kings.newSidebarOption(window, tabToView, text, icon)
 	newWindowSidebarTabUnderline["BorderColor3"] = Color3.fromRGB(0, 0, 0);
 	newWindowSidebarTabUnderline["Position"] = UDim2.new(0.03846153989434242, 0, 1, 0);
 	newWindowSidebarTabUnderline["Name"] = [[underline]];
-
+	
+	
+	
 	local newWindowSidebarTabIcon = Instance.new("ImageButton", newWindowSidebarTab);
 	newWindowSidebarTabIcon["ImageTransparency"] = 0.10000000149011612;
-	newWindowSidebarTabIcon["Image"] = [[rbxassetid://3926305904]];
-	newWindowSidebarTabIcon["ImageRectSize"] = Vector2.new(36, 36);
+	
+	if icon == nil then
+		newWindowSidebarTabIcon["Image"] = [[rbxassetid://3926305904]];
+		newWindowSidebarTabIcon["ImageRectOffset"] = Vector2.new(964, 204);
+		newWindowSidebarTabIcon["ImageRectSize"] = Vector2.new(36, 36);
+	else
+		newWindowSidebarTabIcon["Image"] = icon[1];
+		newWindowSidebarTabIcon["ImageRectOffset"] = icon[2];
+		if icon[3] ~= nil then
+			newWindowSidebarTabIcon["ImageRectSize"] = icon[3];
+		end
+	end
+	
+	
 	newWindowSidebarTabIcon["Size"] = UDim2.new(0, 25, 0, 25);
 	newWindowSidebarTabIcon["Name"] = [[home]];
-	newWindowSidebarTabIcon["ImageRectOffset"] = Vector2.new(964, 204);
 	newWindowSidebarTabIcon["Position"] = UDim2.new(0.04615384712815285, 0, 0.15000000596046448, 0);
 	newWindowSidebarTabIcon["BackgroundTransparency"] = 1;
+	
+	
 	
 	local function onclick(func)
 		newWindowSidebarTab.MouseButton1Click:connect(func)
