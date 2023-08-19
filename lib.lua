@@ -1,6 +1,6 @@
--- I know I write terrible code // cedric0591
-
 local Kings = {};
+local UIAnimationSpeed = 0.1;
+local TweenService = game:GetService("TweenService")
 
 -- init
 local ScreenGui = Instance.new("ScreenGui");
@@ -134,8 +134,15 @@ function Kings.newWindow(windowName, windowSettings)
 		newWindowButton["ImageRectOffset"] = Vector2.new(284, 4);
 		newWindowButton["Position"] = UDim2.new(0.8966666460037231, 0, 0.014999999664723873, 0);
 		newWindowButton["BackgroundTransparency"] = 1;
-	
+		
 		newWindowButton.MouseButton1Click:connect(function()
+			newWindow:TweenSize(UDim2.new(0,0,0,0), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, UIAnimationSpeed, true);
+			for i, v in pairs(newWindow:GetDescendants()) do
+				pcall(function()
+					v:TweenSize(UDim2.new(0,0,0,0), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, UIAnimationSpeed, true);
+				end)
+			end
+			wait(0.04);
 			newWindow:Destroy();
 		end)
 	end
@@ -162,6 +169,21 @@ function Kings.newWindow(windowName, windowSettings)
 	newWindowContent["ScrollBarThickness"] = 6;
 	newWindowContent["Position"] = UDim2.new(0, 0, 0.07750000059604645, 0);
 	newWindowContent["Name"] = "main";
+	
+	local function automaticHeight()
+		local canvSize = 0;
+		
+		for i, v in pairs(newWindowContent:GetChildren()) do
+			if v:IsA("Frame") then
+				canvSize = canvSize + v.Size.Y.Offset;
+			end
+		end
+		
+		newWindowContent.CanvasSize = UDim2.new(0, 0, 0, canvSize+80)
+		wait(1)
+		automaticHeight()
+	end
+	spawn(automaticHeight);
 	
 	if windowSettings["windowSize"] then
 		newWindowContent["Size"] = windowSettings["windowSize"];
@@ -288,10 +310,27 @@ function Kings.newWindow(windowName, windowSettings)
 		newWindowSidebarButton["ImageRectOffset"] = Vector2.new(404, 44);
 		newWindowSidebarButton["Position"] = UDim2.new(0.019611308351159096, 0, 0.013276862911880016, 0);
 		newWindowSidebarButton["BackgroundTransparency"] = 1;
+		
+		newWindowSidebar:SetAttribute("prevSize", newWindowSidebar.Size)
 		newWindowSidebarButton.MouseButton1Click:connect(function()
 			if newWindowSidebar.Visible == false then
+				newWindowSidebar["Size"] = UDim2.new(0, 0, 0, 0);
 				newWindowSidebar.Visible = true
+				newWindowSidebar:TweenSize(newWindowSidebar:GetAttribute("prevSize"), Enum.EasingDirection.Out, Enum.EasingStyle.Sine, UIAnimationSpeed, true);
+				
+				local Object = newWindowSidebarButton -- The object you want to tween.
+				local tweenInfo = TweenInfo.new(UIAnimationSpeed, Enum.EasingStyle.Linear, Enum.EasingDirection.Out, 0, false, 0)
+				local Tween = TweenService:Create(Object, tweenInfo, {Rotation = -90})
+				Tween:Play()
+				
 			elseif newWindowSidebar.Visible == true then
+				local Object = newWindowSidebarButton -- The object you want to tween.
+				local tweenInfo = TweenInfo.new(UIAnimationSpeed, Enum.EasingStyle.Linear, Enum.EasingDirection.Out, 0, false, 0)
+				local Tween = TweenService:Create(Object, tweenInfo, {Rotation = 0})
+				Tween:Play()
+				
+				newWindowSidebar:TweenSize(UDim2.new(0, 0, 0, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Sine, UIAnimationSpeed, true);
+				wait(0.04)
 				newWindowSidebar.Visible = false
 			end
 		end)
@@ -381,7 +420,7 @@ function Kings.newTextElement(window, tab, text)
 	newWindowElementTextTextLabel["BorderColor3"] = Color3.fromRGB(0, 0, 0);
 	newWindowElementTextTextLabel["Text"] = text;
 	newWindowElementTextTextLabel["BackgroundTransparency"] = 1;
-	newWindowElementTextTextLabel["Position"] = UDim2.new(0.040145985782146454, 0, 0.07500000298023224, 0);
+	newWindowElementTextTextLabel["Position"] = UDim2.new(0.040145985782146454, 0, 0.09500000298023224, 0);
 	
 	-- element functions
 	local function setText(text)
@@ -479,7 +518,7 @@ function Kings.newButtonElement(window, tab, text, buttonType)
 	newWindowElementButtonUICorner["CornerRadius"] = UDim.new(0, 7);
 	
 	-- element functions
-	local function callback(func)
+	local function onclick(func)
 		newWindowElementButtonButton.MouseButton1Click:connect(func)
 		newWindowElementButtonImage.MouseButton1Click:connect(func)
 	end
@@ -504,9 +543,23 @@ function Kings.newButtonElement(window, tab, text, buttonType)
 		newWindowElementButton["BackgroundTransparency"] = integer;
 	end	
 	
+	--[[newWindowElementButton:SetAttribute("prevSize", newWindowElementButton.Size);
+	newWindowElementButton.MouseEnter:connect(function()
+		local prevSize = newWindowElementButton:GetAttribute("prevSize")
+		pcall(function()
+			newWindowElementButton:TweenSize(UDim2.new(prevSize.X.Scale + 0.005, prevSize.X.Offset, prevSize.Y.Scale + 0.025, prevSize.Y.Offset), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, UIAnimationSpeed, true);
+		end)
+	end)
+	
+	newWindowElementButton.MouseLeave:connect(function()
+		pcall(function()
+			newWindowElementButton:TweenSize(newWindowElementButton:GetAttribute("prevSize"), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, UIAnimationSpeed, true);
+		end)
+	end)]]--
+	
 	return {
 		newWindowElementButton;
-		callback = callback;
+		onclick = onclick;
 		
 		setText = setText;
 		getText = getText;
@@ -586,7 +639,6 @@ function Kings.newSwitchElement(window, tab, text, state)
 	newWindowElementSwitchTextLabel["BackgroundTransparency"] = 1;
 	
 	local newWindowElementSwitchState = Instance.new("ImageButton", newWindowElementSwitch);
-	print(stateColor);
 	newWindowElementSwitchState["ImageColor3"] = stateColor;
 	newWindowElementSwitchState["LayoutOrder"] = 20;
 	newWindowElementSwitchState["Image"] = stateIcon;
@@ -616,7 +668,7 @@ function Kings.newSwitchElement(window, tab, text, state)
 		end
 	end
 	
-	local function callback(func)
+	local function onclick(func)
 		newWindowElementSwitchTextLabel.MouseButton1Click:connect(func)
 		newWindowElementSwitchState.MouseButton1Click:connect(func)
 	end
@@ -671,7 +723,7 @@ function Kings.newSwitchElement(window, tab, text, state)
 	
 	return {
 		newWindowElementSwitch;
-		callback = callback;
+		onclick = onclick;
 
 		setText = setText;
 		getText = getText;
@@ -856,14 +908,14 @@ function Kings.newSidebarOption(window, tabToView, text, icon)
 	newWindowSidebarTabIcon["Position"] = UDim2.new(0.04615384712815285, 0, 0.15000000596046448, 0);
 	newWindowSidebarTabIcon["BackgroundTransparency"] = 1;
 	
-	local function callback(func)
+	local function onclick(func)
 		newWindowSidebarTab.MouseButton1Click:connect(func)
 		newWindowSidebarTabIcon.MouseButton1Click:connect(func)
 	end
 	
 	return {
 		newWindowSidebarTab;
-		callback = callback;
+		onclick = onclick;
 	}
 end
 
