@@ -29,7 +29,7 @@ local gg = Kings.newWindow("sigma", {
 
 Kings.newCategory(gg, "main", "template elements");
 local newBtn2 = Kings.newButtonElement(gg, "main", "press me!!");
-newBtn2.callback(function()
+newBtn2.onclick(function()
 	print("gg 2!");
 end)
 
@@ -54,14 +54,14 @@ local anotherWindow = Kings.newWindow("player list", {
 	["pattern"] = true,
 });
 
-newBtn.callback(function()
+newBtn.onclick(function()
 	anotherWindow.toggleVisibility();
 	anotherWindow.clear();
 	
 	for i, v in pairs(game.Players:GetChildren()) do
 		local newUser = Kings.newButtonElement(anotherWindow, "main", v.Name, 1);
 		--newUser.setOutlineColor(Color3.fromRGB(math.random(1, 255), math.random(1, 255), math.random(1, 255)));
-		newUser.callback(function()
+		newUser.onclick(function()
 			print(v.Name);
 			anotherWindow.setWindowName(v.Name);
 		end)
@@ -71,7 +71,7 @@ end)
 newBtn.setOutlineColor(Color3.fromRGB(127, 255, 164));
 
 local newSWITCH = Kings.newSwitchElement(gg, "main", "speedhack", false);
-newSWITCH.callback(function() 
+newSWITCH.onclick(function() 
 	newSWITCH.switch();
 	if newSWITCH.getState() == true then
 		game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = 64;
@@ -82,7 +82,7 @@ end)
 
 local username = Kings.newInputElement(gg, "main", "name", "abow");
 local usernameButton = Kings.newButtonElement(gg, "main", "kill player");
-usernameButton.callback(function()
+usernameButton.onclick(function()
 	game.Players[username.getInput()].Character.Humanoid.Health = 0;
 end)
 
