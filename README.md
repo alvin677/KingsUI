@@ -95,7 +95,7 @@ Kings.newButtonElement(newWIN, "main", "hej");
 local newTAB = Kings.newTab(gg)
 local newTAB2 = Kings.newTab(gg)
 local newTABOP = Kings.newSidebarOption(gg, newTAB, "Home");
-local newTABOP2 = Kings.newSidebarOption(gg, newTAB2, "Scripts");
+local newTABOP2 = Kings.newSidebarOption(gg, newTAB2, "Scripts", {"rbxassetid://3926307971", Vector2.new(804, 284), Vector2.new(36, 36)});
 local newstuff = Kings.newTab(gg);
 --local newBUTTONGG = Kings.newButtonElement(newWIN, newstuff, "test");
 ```
