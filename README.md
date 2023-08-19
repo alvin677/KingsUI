@@ -6,8 +6,6 @@ Will add:
 * slider
 * dropdown
 * key input
-* search bar
-* element descriptions?
 * icon list
 * more general functions for each element
 
