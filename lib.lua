@@ -7,6 +7,7 @@ local ScreenGui = Instance.new("ScreenGui");
 ScreenGui["Parent"] = game.Players.LocalPlayer.PlayerGui
 ScreenGui["Name"] = math.random(1, 1000);
 ScreenGui["ResetOnSpawn"] = false;
+ScreenGui["ZIndexBehavior"] = Enum.ZIndexBehavior.Sibling;
 
 function Kings.newWindow(windowName, windowSettings)
 	if windowName == nil then
@@ -279,6 +280,7 @@ function Kings.newWindow(windowName, windowSettings)
 		newWindowSidebar["BorderColor3"] = Color3.fromRGB(0, 0, 0);
 		newWindowSidebar["Name"] = [[windowSidebar]];
 		newWindowSidebar["Visible"] = false;
+		newWindowSidebar["ZIndex"] = 2;
 
 		local newWindowSidebarUICorner = Instance.new("UICorner", newWindowSidebar);
 		newWindowSidebarUICorner["CornerRadius"] = UDim.new(0, 7);
@@ -293,6 +295,7 @@ function Kings.newWindow(windowName, windowSettings)
 		newWindowSidebarTabs["BorderColor3"] = Color3.fromRGB(0, 0, 0);
 		newWindowSidebarTabs["Position"] = UDim2.new(0, 0, 0.11249999701976776, 0);
 		newWindowSidebarTabs["Name"] = [[Tabs]];
+		newWindowSidebarTabs["ZIndex"] = 2;
 
 		local newWindowSidebarTabsUIListLayout = Instance.new("UIListLayout", newWindowSidebarTabs);
 		newWindowSidebarTabsUIListLayout["Padding"] = UDim.new(0, 4);
@@ -310,6 +313,7 @@ function Kings.newWindow(windowName, windowSettings)
 		newWindowSidebarButton["ImageRectOffset"] = Vector2.new(404, 44);
 		newWindowSidebarButton["Position"] = UDim2.new(0.019611308351159096, 0, 0.013276862911880016, 0);
 		newWindowSidebarButton["BackgroundTransparency"] = 1;
+		newWindowSidebarButton["ZIndex"] = 2;
 		
 		newWindowSidebar:SetAttribute("prevSize", newWindowSidebar.Size)
 		newWindowSidebarButton.MouseButton1Click:connect(function()
@@ -351,6 +355,7 @@ function Kings.newWindow(windowName, windowSettings)
 		newWindowSidebarTab["Text"] = windowSettings["sidebarMainName"];
 		newWindowSidebarTab["Position"] = UDim2.new(0.04525686427950859, 0, 0.09749999642372131, 0);
 		newWindowSidebarTab["BackgroundTransparency"] = 1;
+		newWindowSidebarTab["ZIndex"] = 2;
 		newWindowSidebarTab.MouseButton1Click:connect(function() 
 			for i, v in pairs(newWindow:GetChildren()) do
 				if v:IsA("ScrollingFrame") then
@@ -368,6 +373,7 @@ function Kings.newWindow(windowName, windowSettings)
 		newWindowSidebarTabUnderline["BorderColor3"] = Color3.fromRGB(0, 0, 0);
 		newWindowSidebarTabUnderline["Position"] = UDim2.new(0.03846153989434242, 0, 1, 0);
 		newWindowSidebarTabUnderline["Name"] = [[underline]];
+		newWindowSidebarTabUnderline["ZIndex"] = 2;
 
 		local newWindowSidebarTabIcon = Instance.new("ImageButton", newWindowSidebarTab);
 		newWindowSidebarTabIcon["ImageTransparency"] = 0.10000000149011612;
@@ -378,6 +384,7 @@ function Kings.newWindow(windowName, windowSettings)
 		newWindowSidebarTabIcon["ImageRectOffset"] = Vector2.new(964, 204);
 		newWindowSidebarTabIcon["Position"] = UDim2.new(0.04615384712815285, 0, 0.15000000596046448, 0);
 		newWindowSidebarTabIcon["BackgroundTransparency"] = 1;
+		newWindowSidebarTabIcon["ZIndex"] = 2;
 	end
 	
 	return {
@@ -542,20 +549,6 @@ function Kings.newButtonElement(window, tab, text, buttonType)
 	local function setTransparency(integer) 
 		newWindowElementButton["BackgroundTransparency"] = integer;
 	end	
-	
-	--[[newWindowElementButton:SetAttribute("prevSize", newWindowElementButton.Size);
-	newWindowElementButton.MouseEnter:connect(function()
-		local prevSize = newWindowElementButton:GetAttribute("prevSize")
-		pcall(function()
-			newWindowElementButton:TweenSize(UDim2.new(prevSize.X.Scale + 0.005, prevSize.X.Offset, prevSize.Y.Scale + 0.025, prevSize.Y.Offset), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, UIAnimationSpeed, true);
-		end)
-	end)
-	
-	newWindowElementButton.MouseLeave:connect(function()
-		pcall(function()
-			newWindowElementButton:TweenSize(newWindowElementButton:GetAttribute("prevSize"), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, UIAnimationSpeed, true);
-		end)
-	end)]]--
 	
 	return {
 		newWindowElementButton;
@@ -827,7 +820,7 @@ function Kings.newInputElement(window, tab, text, placeholder)
 	}
 end
 
-function Kings.newTab(window)
+function Kings.newTab(window, name)
 	local newWindowContent = Instance.new("ScrollingFrame", window[1]);
 	newWindowContent["Active"] = true;
 	newWindowContent["BorderSizePixel"] = 0;
@@ -839,7 +832,7 @@ function Kings.newTab(window)
 	newWindowContent["BorderColor3"] = Color3.fromRGB(0, 0, 0);
 	newWindowContent["ScrollBarThickness"] = 6;
 	newWindowContent["Position"] = UDim2.new(0, 0, 0.07750000059604645, 0);
-	newWindowContent["Name"] = "newTab";
+	newWindowContent["Name"] = name;
 	newWindowContent["Visible"] = false;
 	
 	local function automaticHeight()
@@ -894,14 +887,15 @@ function Kings.newSidebarOption(window, tabToView, text, icon)
 	newWindowSidebarTab["Text"] = text;
 	newWindowSidebarTab["Position"] = UDim2.new(0.04525686427950859, 0, 0.09749999642372131, 0);
 	newWindowSidebarTab["BackgroundTransparency"] = 1;
+	newWindowSidebarTab["ZIndex"] = 2;
 	newWindowSidebarTab.MouseButton1Click:connect(function()
 		for i, v in pairs(window:GetChildren()) do
 			if v:IsA("ScrollingFrame") then
 				v.Visible = false
 			end
 		end
-
-		tabToView.Visible = true;
+		
+		tabToView[1].Visible = true;
 	end)
 	
 
@@ -912,6 +906,7 @@ function Kings.newSidebarOption(window, tabToView, text, icon)
 	newWindowSidebarTabUnderline["BorderColor3"] = Color3.fromRGB(0, 0, 0);
 	newWindowSidebarTabUnderline["Position"] = UDim2.new(0.03846153989434242, 0, 1, 0);
 	newWindowSidebarTabUnderline["Name"] = [[underline]];
+	newWindowSidebarTabUnderline["ZIndex"] = 2;
 	
 	
 	
@@ -935,6 +930,7 @@ function Kings.newSidebarOption(window, tabToView, text, icon)
 	newWindowSidebarTabIcon["Name"] = [[home]];
 	newWindowSidebarTabIcon["Position"] = UDim2.new(0.04615384712815285, 0, 0.15000000596046448, 0);
 	newWindowSidebarTabIcon["BackgroundTransparency"] = 1;
+	newWindowSidebarTabIcon["ZIndex"] = 2;
 	
 	
 	
@@ -946,6 +942,131 @@ function Kings.newSidebarOption(window, tabToView, text, icon)
 	return {
 		newWindowSidebarTab;
 		onclick = onclick;
+	}
+end
+
+function Kings.newSliderElement(window, tab, text, defaultValue)
+	local newWindowElementSlider = Instance.new("TextButton", window[1][tab]);
+	newWindowElementSlider["BorderSizePixel"] = 0;
+	newWindowElementSlider["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+	newWindowElementSlider["BackgroundTransparency"] = 0.8999999761581421;
+	newWindowElementSlider["Size"] = UDim2.new(0, 274, 0, 60);
+	newWindowElementSlider["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+	newWindowElementSlider["Position"] = UDim2.new(0.04333333298563957, 0, 0.31855955719947815, 0);
+	newWindowElementSlider["Name"] = [[windowElementSlider]];
+	newWindowElementSlider["Text"] = "";
+
+	local newWindowElementSliderUIStroke = Instance.new("UIStroke", newWindowElementSlider);
+	newWindowElementSliderUIStroke["Color"] = Color3.fromRGB(20, 20, 20);
+	newWindowElementSliderUIStroke["Thickness"] = 0.5099999904632568;
+
+	local newWindowElementSliderTextLabel = Instance.new("TextLabel", newWindowElementSlider);
+	newWindowElementSliderTextLabel["TextWrapped"] = true;
+	newWindowElementSliderTextLabel["BorderSizePixel"] = 0;
+	newWindowElementSliderTextLabel["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+	newWindowElementSliderTextLabel["FontFace"] = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.Bold, Enum.FontStyle.Normal);
+	newWindowElementSliderTextLabel["TextSize"] = 15;
+	newWindowElementSliderTextLabel["TextColor3"] = Color3.fromRGB(221, 221, 221);
+	newWindowElementSliderTextLabel["Size"] = UDim2.new(0, 274, 0, 40);
+	newWindowElementSliderTextLabel["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+	newWindowElementSliderTextLabel["Text"] = text;
+	newWindowElementSliderTextLabel["BackgroundTransparency"] = 1;
+	newWindowElementSliderTextLabel["Position"] = UDim2.new(0, 0, -0.014285714365541935, 0);
+
+	local newWindowElementSliderIcon = Instance.new("ImageButton", newWindowElementSlider);
+	newWindowElementSliderIcon["ImageColor3"] = Color3.fromRGB(255, 161, 98);
+	newWindowElementSliderIcon["LayoutOrder"] = 5;
+	newWindowElementSliderIcon["Image"] = [[rbxassetid://3926305904]];
+	newWindowElementSliderIcon["ImageRectSize"] = Vector2.new(36, 36);
+	newWindowElementSliderIcon["Size"] = UDim2.new(0, 25, 0, 25);
+	newWindowElementSliderIcon["Name"] = [[icon]];
+	newWindowElementSliderIcon["ImageRectOffset"] = Vector2.new(4, 124);
+	newWindowElementSliderIcon["Position"] = UDim2.new(0.8722627758979797, 0, 0.10357142984867096, 0);
+	newWindowElementSliderIcon["BackgroundTransparency"] = 1;
+
+	local newWindowElementSliderSlider = Instance.new("Frame", newWindowElementSlider);
+	newWindowElementSliderSlider["BorderSizePixel"] = 0;
+	newWindowElementSliderSlider["BackgroundColor3"] = Color3.fromRGB(255, 161, 98);
+	newWindowElementSliderSlider["BackgroundTransparency"] = 0.10000000149011612;
+	newWindowElementSliderSlider["Size"] = UDim2.new(0, 0, 0, 8);
+	newWindowElementSliderSlider["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+	newWindowElementSliderSlider["Position"] = UDim2.new(0.06526785343885422, 0, 0.6976191401481628, 0);
+	newWindowElementSliderSlider["Name"] = "slider";
+	
+	local newWindowElementSliderSliderOutline = Instance.new("Frame", newWindowElementSlider);
+	newWindowElementSliderSliderOutline["BorderSizePixel"] = 0;
+	newWindowElementSliderSliderOutline["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+	newWindowElementSliderSliderOutline["BackgroundTransparency"] = 0.8999999761581421;
+	newWindowElementSliderSliderOutline["Size"] = UDim2.new(0, 238, 0, 8);
+	newWindowElementSliderSliderOutline["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+	newWindowElementSliderSliderOutline["Position"] = UDim2.new(0.06526785343885422, 0, 0.6976191401481628, 0);
+	newWindowElementSliderSliderOutline["Name"] = [[sliderOutline]];
+	
+	local minSliderValue = 0
+	local maxSliderValue = 100
+
+	local dragging = false
+	local inputChangedConnection
+
+	local sliderWidth = newWindowElementSliderSliderOutline.AbsoluteSize.X;
+	local val = 0;
+	
+	local title = newWindowElementSliderTextLabel["Text"];
+	newWindowElementSliderTextLabel["Text"] = title.." ["..defaultValue.."]";
+	
+	newWindowElementSlider.MouseButton1Down:Connect(function()
+		dragging = true
+		inputChangedConnection = game:GetService("UserInputService").InputChanged:Connect(function(input)
+			if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+				local sliderPosition = input.Position.X - newWindowElementSliderSliderOutline.AbsolutePosition.X
+				sliderPosition = math.clamp(sliderPosition, 0, sliderWidth)
+				local newValue = sliderPosition / sliderWidth * (maxSliderValue - minSliderValue) + minSliderValue
+				newWindowElementSliderTextLabel["Text"] = title.." ["..tostring(math.floor(newValue)).."]";
+				val = tostring(math.floor(newValue))
+				newWindowElementSliderSlider["Size"] = UDim2.new(0, sliderPosition, 0, 8);
+			end
+		end)
+		end)
+
+	newWindowElementSlider.MouseButton1Up:Connect(function()
+		dragging = false
+		if inputChangedConnection then
+			inputChangedConnection:Disconnect()
+		end
+	end)
+	
+	local function getValue()
+		return val;
+	end
+	
+	local function minValue(val)
+		minSliderValue = val;
+	end
+	
+	local function maxValue(val)
+		maxSliderValue = val;
+	end
+	
+	local newWindowElementSliderSliderOutlineUICorner = Instance.new("UICorner", newWindowElementSliderSliderOutline);
+	newWindowElementSliderSliderOutlineUICorner["CornerRadius"] = UDim.new(0, 7);
+	
+	local newWindowElementSliderSliderOutlineUIStroke = Instance.new("UIStroke", newWindowElementSliderSliderOutline);
+	newWindowElementSliderSliderOutlineUIStroke["Color"] = Color3.fromRGB(255, 161, 98);
+	newWindowElementSliderSliderOutlineUIStroke["Thickness"] = 0.5099999904632568;
+	
+	local newWindowElementSliderSliderUICorner = Instance.new("UICorner", newWindowElementSliderSlider);
+	newWindowElementSliderSliderUICorner["CornerRadius"] = UDim.new(0, 7);
+
+	local newWindowElementSliderSliderUIStroke = Instance.new("UIStroke", newWindowElementSliderSlider);
+	newWindowElementSliderSliderUIStroke["Color"] = Color3.fromRGB(255, 161, 98);
+	newWindowElementSliderSliderUIStroke["Thickness"] = 0.5099999904632568;
+	
+	return {
+		newWindowElementSlider;
+		getValue = getValue;
+		minValue = minValue;
+		maxValue = maxValue;
+		
 	}
 end
 
