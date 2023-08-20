@@ -15,13 +15,17 @@ Will add:
 
 # Documentation
 
-Importing the library (should work with loadstring as well):
+New windows that you create will contain a default tab called `main` (string). <br />
+If you are not using the sidebar feature, put `"main"` as the `tab` argument.
+
+Importing the library by creating a new ModuleScript with the `lib.lua` code inside (it should work with loadstring as well):
 ```lua
 local Kings = require(script.Parent.KingsLib);
 ```
 
 Making a new window:
 ```lua
+-- .newWindow(title, settings)
 local firstWindow = Kings.newWindow("A new window.", {
 	["windowColor"] = {10, 10, 255}, -- color of the window
 	["noCloseButton"] = false, -- can be used to disable/enable 'x' button
@@ -33,3 +37,18 @@ local firstWindow = Kings.newWindow("A new window.", {
 });
 ```
 
+Making a section for elements, on the window:
+```lua
+-- .newCategory(window, tab, title)
+Kings.newCategory(gg, "main", "template elements");
+```
+(Put `"main"` as the `tab` argument if you have not yet created a new tab. This is the default name of the first tab that is automatically created when making a new window)
+
+Creating a button element:
+```lua
+-- .newButtonElement(window, tab, text)
+local newBtn = Kings.newButtonElement(firstWindow, "main", "click here");
+newBtn.onclick(function()
+	print("button clicked");
+end)
+```
