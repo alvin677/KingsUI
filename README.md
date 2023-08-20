@@ -13,7 +13,7 @@ Will add:
 
 # Example
 ```lua
-wait(5)
+wait(1)
 local Kings = require(script.Parent.KingsLib)
 
 local gg = Kings.newWindow("sigma", {
@@ -95,10 +95,15 @@ gggg.setWindowLight(255);
 local newWIN = Kings.newWindow("new", {["draggable"] = true, ["hideWindowTitle"] = true, ["sidebar"] = true, ["sidebarMainName"] = "Home"});
 Kings.newButtonElement(newWIN, "main", "hej");
 
-local newTAB = Kings.newTab(gg)
-local newTAB2 = Kings.newTab(gg)
+local newTAB = Kings.newTab(gg, "home")
+local newTAB2 = Kings.newTab(gg, "scripts")
 local newTABOP = Kings.newSidebarOption(gg, newTAB, "Home");
 local newTABOP2 = Kings.newSidebarOption(gg, newTAB2, "Scripts", {"rbxassetid://3926307971", Vector2.new(804, 284), Vector2.new(36, 36)});
-local newstuff = Kings.newTab(gg);
+
+Kings.newSliderElement(gg, "scripts", "coolest slider", 50);
+Kings.newSliderElement(gg, "scripts", "coolest slider2", 0).maxValue(1);
+
+Kings.newButtonElement(gg, "scripts", "hej");
+local newstuff = Kings.newTab(gg, "bruh");
 --local newBUTTONGG = Kings.newButtonElement(newWIN, newstuff, "test");
 ```
