@@ -6,7 +6,6 @@ A Roblox UI Library with a bunch of features.
 
 Will add:
 
-* slider
 * dropdown
 * key input
 * more general functions for each element
