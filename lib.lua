@@ -259,17 +259,15 @@ function Kings.newWindow(windowName, windowSettings)
 	
 	if windowSettings["pattern"] == true then
 	local newWindowBackground = Instance.new("ImageLabel", newWindow);
-	newWindowBackground["SliceCenter"] = Rect.new(0, 256, 0, 256);
-	newWindowBackground["ScaleType"] = Enum.ScaleType.Tile;
-	newWindowBackground["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
-	newWindowBackground["ImageTransparency"] = 0.6000000238418579;
-	newWindowBackground["Image"] = [[rbxassetid://2151741365]];
-	newWindowBackground["TileSize"] = UDim2.new(0, 250, 0, 250);
-	newWindowBackground["Size"] = newWindow["Size"];
-	newWindowBackground["Name"] = [[background]];
-	newWindowBackground["BackgroundTransparency"] = 1;
-	newWindowBackground["ZIndex"] = 0;
-		
+		newWindowBackground["SliceCenter"] = Rect.new(0, 256, 0, 256);
+		newWindowBackground["ScaleType"] = Enum.ScaleType.Tile;
+		newWindowBackground["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+		newWindowBackground["ImageTransparency"] = 0.6000000238418579;
+		newWindowBackground["Image"] = [[rbxassetid://2151741365]];
+		newWindowBackground["TileSize"] = UDim2.new(0, 250, 0, 250);
+		newWindowBackground["Size"] = newWindow["Size"];
+		newWindowBackground["Name"] = [[background]];
+		newWindowBackground["BackgroundTransparency"] = 1;
 	end
 	
 	if windowSettings["sidebar"] == true then
