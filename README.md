@@ -26,9 +26,10 @@ local firstWindow = Kings.newWindow("A new window.", {
 	["windowColor"] = {10, 10, 255}, -- color of the window
 	["noCloseButton"] = false, -- can be used to disable/enable 'x' button
 	["draggable"] = true, -- allow the window to be dragged around
-  ["hide"] = false, -- if true, hide on creation
+  	["hide"] = false, -- if true, hide on creation
 	["showShadows"] = true, -- shadow around the ui
 	["pattern"] = true, -- pattern (sort of like a background)
 	["sidebar"] = true -- enable sidebar
 });
 ```
+
