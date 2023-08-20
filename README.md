@@ -37,7 +37,8 @@ local firstWindow = Kings.newWindow("A new window.", {
 });
 ```
 
-Making a section for elements, on the window:
+Making a "section" for elements, on the window.
+It is basically just a space with a more transparent text:
 ```lua
 -- .newCategory(window, tab, title)
 Kings.newCategory(gg, "main", "template elements");
