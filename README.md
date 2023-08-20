@@ -6,8 +6,8 @@ A Roblox UI Library with a bunch of features.
 
 Will add:
 
-* dropdown
-* key input
+* dropdown element
+* key input element
 * more general functions for each element
 
 # Example
