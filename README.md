@@ -1,7 +1,7 @@
 # KingsUI
 A Roblox UI Library with a bunch of features.
 
-![image](https://github.com/alvin677/KingsUI/assets/112005397/e43274c4-2575-44a2-b8df-0187ad4169d3)
+![image](https://github.com/alvin677/KingsUI/assets/112005397/e43274c4-2575-44a2-b8df-0187ad4169d3) <br />
 <video src = "https://media.discordapp.net/attachments/1021829850736115783/1142911946438488185/2023-08-20_21-59-03.mp4" />
 
 
