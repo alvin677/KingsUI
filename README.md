@@ -2,7 +2,8 @@
 A Roblox UI Library with a bunch of features.
 
 ![image](https://github.com/alvin677/KingsUI/assets/112005397/e43274c4-2575-44a2-b8df-0187ad4169d3)
-![video](https://media.discordapp.net/attachments/1021829850736115783/1142911946438488185/2023-08-20_21-59-03.mp4)
+![video](https://github.com/alvin677/KingsUI/assets/112005397/ed6c272e-1e6a-4167-97b1-18889e29f854)
+
 
 
 I am very aware that there could be bugs because of scaling and other stuff. If you find anything, please report to me on Discord: cedric0591 <br />
