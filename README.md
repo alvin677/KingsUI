@@ -40,7 +40,9 @@ local firstWindow = Kings.newWindow("A new window.", {
   	["hide"] = false, -- if true, hide on creation
 	["showShadows"] = true, -- shadow around the ui
 	["pattern"] = true, -- pattern (sort of like a background)
-	["sidebar"] = true -- enable sidebar
+	["sidebar"] = true, -- enable sidebar
+	["sidebarMainName"] = "Home", -- name of the default "Main" tab in the sidebar
+	["hideWindowTitle"] = false,
 });
 ```
 
@@ -48,6 +50,7 @@ Windows has got a couple of useful functions/methods:
 ```lua
 firstWindow.toggleVisibility();
 firstWindow.clear();
+firstWindow.setWindowLight(255);
 firstWindow.setWindowName("new title");
 ```
 
@@ -118,4 +121,22 @@ Methods for input element:
 ```lua
 .getInput() -- returns written input
 .onclick(function() end)
+```
+
+**Creating new tabs:**
+```lua
+-- .newTab(window, name) -- creates a new tab (place to put elements) (name can be whatever if you use a variable to reference to it)
+-- .newSidebarOption(window, tab, text, icon); -- making a new button in the sidebar that can lead to a tab
+local newTab = Kings.newTab(firstWindow, "home")
+local newTabOp = Kings.newSidebarOption(firstWindow, newTab, "Home");
+
+local newTabOp2 = Kings.newSidebarOption(firstWindow, newTab, "Scripts", {"rbxassetid://3926307971", Vector2.new(804, 284), Vector2.new(36, 36)});
+-- in the icon list, first is the Image, next is the ImageRectOffset and last the ImageRectSize
+```
+
+**Making a slider element:**
+```lua
+-- .newSliderElement(window, tab, text, value)
+Kings.newSliderElement(firstWindow, "home", "coolest slider", 50);
+Kings.newSliderElement(firstWindow, "home", "another cool one", 0).maxValue(1);
 ```
