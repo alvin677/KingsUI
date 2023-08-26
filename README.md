@@ -28,7 +28,7 @@ Importing the library by creating a new ModuleScript (rename it to KingsLib or s
 local Kings = require(script.Parent.KingsLib);
 ```
 
-Making a new window:
+**Making a new window:**
 ```lua
 -- .newWindow(title, settings)
 local firstWindow = Kings.newWindow("A new window.", {
@@ -51,7 +51,7 @@ firstWindow.clear();
 firstWindow.setWindowName("new title");
 ```
 
-Making a category (sort of section) for elements, on the window.
+**Making a category (sort of section) for elements, on the window.**
 It is basically just a space with a more transparent text:
 ```lua
 -- .newCategory(window, tab, title)
@@ -59,7 +59,7 @@ Kings.newCategory(gg, "main", "template elements");
 ```
 (Put `"main"` as the `tab` argument if you have not yet created a new tab. This is the default name of the first tab that is automatically created when making a new window)
 
-Creating a button element:
+**Creating a button element:**
 ```lua
 -- .newButtonElement(window, tab, text)
 local newBtn = Kings.newButtonElement(firstWindow, "main", "click here");
@@ -68,7 +68,7 @@ newBtn.onclick(function()
 end)
 ```
 
-Creating a text label element:
+**Creating a text label element:**
 ```lua
 -- .newTextElement(window, tab, text)
 local newLabel = Kings.newTextElement(firstWindow, "main", "Hello World!");
