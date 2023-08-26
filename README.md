@@ -23,7 +23,7 @@ Will add:
 New windows that you create will contain a default tab called `main` (string). <br />
 If you are not using the sidebar feature, put `"main"` as the `tab` argument.
 
-Importing the library by creating a new ModuleScript with the `lib.lua` code inside (it should work with loadstring as well):
+Importing the library by creating a new ModuleScript (rename it to KingsLib or something) with the `lib.lua` code inside (it should work with loadstring as well):
 ```lua
 local Kings = require(script.Parent.KingsLib);
 ```
@@ -51,7 +51,7 @@ firstWindow.clear();
 firstWindow.setWindowName("new title");
 ```
 
-Making a "section" for elements, on the window.
+Making a category (sort of section) for elements, on the window.
 It is basically just a space with a more transparent text:
 ```lua
 -- .newCategory(window, tab, title)
@@ -67,3 +67,11 @@ newBtn.onclick(function()
 	print("button clicked");
 end)
 ```
+
+Creating a text label element:
+```lua
+-- .newTextElement(window, tab, text)
+local newLabel = Kings.newTextElement(firstWindow, "main", "Hello World!");
+newLabel.setText("Hello World 2!");
+```
+
