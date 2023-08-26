@@ -33,6 +33,8 @@ Making a new window:
 -- .newWindow(title, settings)
 local firstWindow = Kings.newWindow("A new window.", {
 	["windowColor"] = {10, 10, 255}, -- color of the window
+	["windowSize"] = UDim2.new(0, 600, 0, 600), -- size of window (300, 400 is defualt)
+	["windowPosition"] = UDim2.new(0.20, 0, 0.15, 0), -- position of window
 	["noCloseButton"] = false, -- can be used to disable/enable 'x' button
 	["draggable"] = true, -- allow the window to be dragged around
   	["hide"] = false, -- if true, hide on creation
@@ -40,6 +42,13 @@ local firstWindow = Kings.newWindow("A new window.", {
 	["pattern"] = true, -- pattern (sort of like a background)
 	["sidebar"] = true -- enable sidebar
 });
+```
+
+Windows has got a couple of useful functions:
+```lua
+firstWindow.toggleVisibility();
+firstWindow.clear();
+firstWindow.setWindowName("new title");
 ```
 
 Making a "section" for elements, on the window.
