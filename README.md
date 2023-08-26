@@ -44,7 +44,7 @@ local firstWindow = Kings.newWindow("A new window.", {
 });
 ```
 
-Windows has got a couple of useful functions:
+Windows has got a couple of useful functions/methods:
 ```lua
 firstWindow.toggleVisibility();
 firstWindow.clear();
@@ -61,12 +61,20 @@ Kings.newCategory(gg, "main", "template elements");
 
 **Creating a button element:**
 ```lua
--- .newButtonElement(window, tab, text)
+-- .newButtonElement(window, tab, text, icon)
+-- the icon argument is default 1, there's 1-3 available (pointer, trashcan, star)
 local newBtn = Kings.newButtonElement(firstWindow, "main", "click here");
 newBtn.onclick(function()
 	print("button clicked");
 end)
 ```
+
+Methods/functions for the button element:
+```lua
+newBtn.onclick(function() end)
+newBtn.setOutlineColor(Color3.fromRGB(127, 255, 164));
+```
+
 
 **Creating a text label element:**
 ```lua
@@ -75,3 +83,39 @@ local newLabel = Kings.newTextElement(firstWindow, "main", "Hello World!");
 newLabel.setText("Hello World 2!");
 ```
 
+**Creating a switch/checkbox/toggle:**
+```lua
+-- .newSwitchElement(window, tab, text, state);
+local newSwitch = Kings.newSwitchElement(firstWindow, "main", "Walkspeed", false);
+newSwitch.onclick(function() 
+	newSwitch.switch();
+	if newSwitch.getState() == true then
+		game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = 64;
+	else 
+		game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = 16;
+	end
+end)
+```
+
+Methods for switches:
+```lua
+.getState() -- returns state, true/false
+.switch() -- change state
+.onclick(function() end)
+```
+
+**Input element:**
+```lua
+-- .newInputElement(window, tab, text, placeholder)
+local username = Kings.newInputElement(firstWindow, "main", "Kill player:", "who?");
+local usernameButton = Kings.newButtonElement(firstWindow, "main", "kill player");
+usernameButton.onclick(function()
+	game.Players[username.getInput()].Character.Humanoid.Health = 0;
+end)
+```
+
+Methods for input element:
+```lua
+.getInput() -- returns written input
+.onclick(function() end)
+```
