@@ -142,7 +142,11 @@ Kings.newSliderElement(firstWindow, "home", "another cool one", 0).maxValue(1);
 ```
 
 **Manually edit elements:**
-```
+```lua
 local input_name = Kings.newInputElement(firstWindow, "main", "Target player:", "name");
 input_name[1]["TextBox"].TextScaled = true -- this will set the TextScaled property of the Input element's TextBox (the input field) to 'true'
+
+-- you can always try logging an element and see what it outputs:
+print(input_name)
+-- in this case, [1] is the actual object itself in game.Workspace
 ```
