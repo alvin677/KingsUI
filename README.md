@@ -140,3 +140,9 @@ local newTabOp2 = Kings.newSidebarOption(firstWindow, newTab, "Scripts", {"rbxas
 Kings.newSliderElement(firstWindow, "home", "coolest slider", 50);
 Kings.newSliderElement(firstWindow, "home", "another cool one", 0).maxValue(1);
 ```
+
+**Manually edit elements:**
+```
+local input_name = Kings.newInputElement(firstWindow, "main", "Target player:", "name");
+input_name[1]["TextBox"].TextScaled = true -- this will set the TextScaled property of the Input element's TextBox (the input field) to 'true'
+```
