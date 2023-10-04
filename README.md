@@ -23,7 +23,7 @@ Will add:
 New windows that you create will contain a default tab called `main` (string). <br />
 If you are not using the sidebar feature, put `"main"` as the `tab` argument.
 
-Importing the library by creating a new ModuleScript (rename it to KingsLib or something) with the `lib.lua` code inside (it should work with loadstring as well):
+Importing the library by creating a new ModuleScript (rename it to KingsLib or something) with the `lib.lua` code inside (it should work with loadstring as well??):
 ```lua
 local Kings = require(script.Parent.KingsLib);
 ```
