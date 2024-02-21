@@ -1,11 +1,11 @@
 local Kings = {};
-local UIAnimationSpeed = 0.1;
+local UIAnimationSpeed : number = 0.1;
 local TweenService = game:GetService("TweenService")
 
 -- init
-local ScreenGui = Instance.new("ScreenGui");
-ScreenGui["Parent"] = game.Players.LocalPlayer.PlayerGui
-ScreenGui["Name"] = math.random(1, 1000);
+local ScreenGui = script.Parent.Parent;
+ScreenGui["Parent"] = game:GetService("Players").LocalPlayer:FindFirstChildWhichIsA("PlayerGui")
+ScreenGui["Name"] = "cofsSKID";
 ScreenGui["ResetOnSpawn"] = false;
 ScreenGui["ZIndexBehavior"] = Enum.ZIndexBehavior.Sibling;
 
@@ -13,7 +13,7 @@ function Kings.newWindow(windowName, windowSettings)
 	if windowName == nil then
 		windowName = "Window";
 	end
-	
+
 	-- the new window frame
 	local newWindow = Instance.new("Frame", ScreenGui);
 	newWindow["BorderSizePixel"] = 0;
@@ -21,19 +21,19 @@ function Kings.newWindow(windowName, windowSettings)
 	newWindow["Size"] = UDim2.new(0, 300, 0, 400);
 	newWindow["Position"] = UDim2.new(0.07388179004192352, 0, 0.15295256674289703, 0);
 	newWindow["Name"] = windowName;
-	
+
 	local function setWindowLight(integer)
 		newWindow["BackgroundColor3"] = Color3.fromRGB(integer, integer, integer);
 	end
-	
+
 	if windowSettings["windowSize"] then
 		newWindow["Size"] = windowSettings["windowSize"];
 	end
-	
+
 	if windowSettings["windowPosition"] then
 		newWindow["Position"] = windowSettings["windowPosition"];
 	end
-	
+
 	if windowSettings["draggable"] == true then
 		local UserInputService = game:GetService("UserInputService")
 		local runService = (game:GetService("RunService"));
@@ -89,19 +89,16 @@ function Kings.newWindow(windowName, windowSettings)
 
 		runService.Heartbeat:Connect(Update)
 	end 
-	
+
 	local function toggleVisibility() 
-		if newWindow["Visible"] == false then
-			newWindow["Visible"] = true
-		elseif newWindow["Visible"] == true then
-			newWindow["Visible"] = false
-		end
+		-- optimized lmao
+		newWindow["Visible"] = not newWindow["Visible"]
 	end
-	
+
 	if windowSettings["hide"] == true then
 		newWindow["Visible"] = false;
 	end
-	
+
 	local newTitle = Instance.new("TextLabel", newWindow);
 	newTitle["BorderSizePixel"] = 0;
 	newTitle["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
@@ -118,16 +115,16 @@ function Kings.newWindow(windowName, windowSettings)
 	local function setWindowName(name)
 		newTitle["Text"] = name;
 	end
-	
+
 	-- window title
 	if windowSettings["hideWindowTitle"] == true then
 		newTitle["Visible"] = false;
 	end
-	
+
 	-- window top right corner button
 	if windowSettings["noCloseButton"] ~= true then
 
-	local newWindowButton = Instance.new("ImageButton", newWindow);
+		local newWindowButton = Instance.new("ImageButton", newWindow);
 		newWindowButton["Image"] = [[rbxassetid://3926305904]];
 		newWindowButton["ImageRectSize"] = Vector2.new(24, 24);
 		newWindowButton["Size"] = UDim2.new(0, 25, 0, 25);
@@ -135,7 +132,7 @@ function Kings.newWindow(windowName, windowSettings)
 		newWindowButton["ImageRectOffset"] = Vector2.new(284, 4);
 		newWindowButton["Position"] = UDim2.new(0.8966666460037231, 0, 0.014999999664723873, 0);
 		newWindowButton["BackgroundTransparency"] = 1;
-		
+
 		newWindowButton.MouseButton1Click:connect(function()
 			newWindow:TweenSize(UDim2.new(0,0,0,0), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, UIAnimationSpeed, true);
 			for i, v in pairs(newWindow:GetDescendants()) do
@@ -143,21 +140,21 @@ function Kings.newWindow(windowName, windowSettings)
 					v:TweenSize(UDim2.new(0,0,0,0), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, UIAnimationSpeed, true);
 				end)
 			end
-			wait(0.04);
+			task.wait(0.04);
 			newWindow:Destroy();
 		end)
 	end
 
 	local newWindowUICorner = Instance.new("UICorner", newWindow);
 	newWindowUICorner["CornerRadius"] = UDim.new(0, 7);
-	
+
 	local newWindowUIGradient = Instance.new("UIGradient", newWindow);
 	newWindowUIGradient["Rotation"] = 90;
 	newWindowUIGradient["Color"] = ColorSequence.new{ColorSequenceKeypoint.new(0.000, Color3.fromRGB(50, 50, 50)),ColorSequenceKeypoint.new(1.000, Color3.fromRGB(50, 50, 50))};
 	if (windowSettings["windowColor"]) then
 		newWindowUIGradient["Color"] = ColorSequence.new{ColorSequenceKeypoint.new(0.000, Color3.fromRGB(windowSettings["windowColor"][1], windowSettings["windowColor"][2], windowSettings["windowColor"][3])),ColorSequenceKeypoint.new(1.000, Color3.fromRGB(0, 0, 0))};
 	end
-	
+
 	-- window content
 	local newWindowContent = Instance.new("ScrollingFrame", newWindow);
 	newWindowContent["Active"] = true;
@@ -170,27 +167,28 @@ function Kings.newWindow(windowName, windowSettings)
 	newWindowContent["ScrollBarThickness"] = 6;
 	newWindowContent["Position"] = UDim2.new(0, 0, 0.07750000059604645, 0);
 	newWindowContent["Name"] = "main";
-	
+
 	local function automaticHeight()
 		local canvSize = 0;
-		
+
 		for i, v in pairs(newWindowContent:GetChildren()) do
 			if v:IsA("Frame") then
 				canvSize = canvSize + v.Size.Y.Offset;
 			end
 		end
-		
+
 		newWindowContent.CanvasSize = UDim2.new(0, 0, 0, canvSize+80)
-		wait(5)
+		task.wait(5)
 		automaticHeight()
 	end
-	spawn(automaticHeight);
-	
+	-- dear god dont use spawn pls use task.spawn
+	task.spawn(automaticHeight);
+
 	if windowSettings["windowSize"] then
 		newWindowContent["Size"] = windowSettings["windowSize"];
 		newWindowContent["Size"] = newWindowContent["Size"] + UDim2.new(0, 0, 0, -31)
 	end
-	
+
 	local function clear()
 		for i, v in pairs(newWindowContent:GetChildren()) do
 			if v:IsA("Frame") then 
@@ -198,15 +196,15 @@ function Kings.newWindow(windowName, windowSettings)
 			end
 		end
 	end
-	
+
 	local newWindowContentUIPadding = Instance.new("UIPadding", newWindowContent);
 	newWindowContentUIPadding["PaddingTop"] = UDim.new(0, 8);
-	
+
 	local newWindowContentUIListLayout = Instance.new("UIListLayout", newWindowContent);
 	newWindowContentUIListLayout["HorizontalAlignment"] = Enum.HorizontalAlignment.Center;
 	newWindowContentUIListLayout["Padding"] = UDim.new(0, 7);
 	newWindowContentUIListLayout["SortOrder"] = Enum.SortOrder.LayoutOrder;
-	
+
 	if windowSettings["showShadows"] == true then
 
 		local newWindowShadowHolder = Instance.new("Frame", newWindow);
@@ -254,11 +252,11 @@ function Kings.newWindow(windowName, windowSettings)
 		newWindowAmbientShadow["Name"] = [[ambientShadow]];
 		newWindowAmbientShadow["BackgroundTransparency"] = 1;
 		newWindowAmbientShadow["Position"] = UDim2.new(0.5, 0, 0.5, 0);
-		
+
 	end
-	
+
 	if windowSettings["pattern"] == true then
-	local newWindowBackground = Instance.new("ImageLabel", newWindow);
+		local newWindowBackground = Instance.new("ImageLabel", newWindow);
 		newWindowBackground["SliceCenter"] = Rect.new(0, 256, 0, 256);
 		newWindowBackground["ScaleType"] = Enum.ScaleType.Tile;
 		newWindowBackground["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
@@ -269,7 +267,7 @@ function Kings.newWindow(windowName, windowSettings)
 		newWindowBackground["Name"] = [[background]];
 		newWindowBackground["BackgroundTransparency"] = 1;
 	end
-	
+
 	if windowSettings["sidebar"] == true then
 		local newWindowSidebar = Instance.new("Frame", newWindow);
 		newWindowSidebar["BorderSizePixel"] = 0;
@@ -301,7 +299,7 @@ function Kings.newWindow(windowName, windowSettings)
 
 		local newWindowSidebarTabsUIPadding = Instance.new("UIPadding", newWindowSidebarTabs);
 		newWindowSidebarTabsUIPadding["PaddingLeft"] = UDim.new(0, 4);
-		
+
 		local newWindowSidebarButton = Instance.new("ImageButton", newWindow);
 		newWindowSidebarButton["LayoutOrder"] = 6;
 		newWindowSidebarButton["Image"] = [[rbxassetid://3926307971]];
@@ -312,35 +310,35 @@ function Kings.newWindow(windowName, windowSettings)
 		newWindowSidebarButton["Position"] = UDim2.new(0.019611308351159096, 0, 0.013276862911880016, 0);
 		newWindowSidebarButton["BackgroundTransparency"] = 1;
 		newWindowSidebarButton["ZIndex"] = 2;
-		
+
 		newWindowSidebar:SetAttribute("prevSize", newWindowSidebar.Size)
 		newWindowSidebarButton.MouseButton1Click:connect(function()
 			if newWindowSidebar.Visible == false then
 				newWindowSidebar["Size"] = UDim2.new(0, 0, 0, 0);
 				newWindowSidebar.Visible = true
 				newWindowSidebar:TweenSize(newWindowSidebar:GetAttribute("prevSize"), Enum.EasingDirection.Out, Enum.EasingStyle.Sine, UIAnimationSpeed, true);
-				
+
 				local Object = newWindowSidebarButton -- The object you want to tween.
 				local tweenInfo = TweenInfo.new(UIAnimationSpeed, Enum.EasingStyle.Linear, Enum.EasingDirection.Out, 0, false, 0)
 				local Tween = TweenService:Create(Object, tweenInfo, {Rotation = -90})
 				Tween:Play()
-				
+
 			elseif newWindowSidebar.Visible == true then
 				local Object = newWindowSidebarButton -- The object you want to tween.
 				local tweenInfo = TweenInfo.new(UIAnimationSpeed, Enum.EasingStyle.Linear, Enum.EasingDirection.Out, 0, false, 0)
 				local Tween = TweenService:Create(Object, tweenInfo, {Rotation = 0})
 				Tween:Play()
-				
+
 				newWindowSidebar:TweenSize(UDim2.new(0, 0, 0, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Sine, UIAnimationSpeed, true);
-				wait(0.04)
+				task.wait(0.04)
 				newWindowSidebar.Visible = false
 			end
 		end)
-		
+
 		if windowSettings["sidebarMainName"] == nil then
 			windowSettings["sidebarMainName"] = "main";
 		end
-		
+
 		local newWindowSidebarTab = Instance.new("TextButton", newWindowSidebarTabs);
 		newWindowSidebarTab["BorderSizePixel"] = 0;
 		newWindowSidebarTab["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
@@ -384,12 +382,12 @@ function Kings.newWindow(windowName, windowSettings)
 		newWindowSidebarTabIcon["BackgroundTransparency"] = 1;
 		newWindowSidebarTabIcon["ZIndex"] = 2;
 	end
-	
+
 	return {
 		newWindow;
 		toggleVisibility = toggleVisibility;
 		clear = clear;
-		
+
 		setWindowLight = setWindowLight;
 		setWindowName = setWindowName;
 	}
@@ -426,28 +424,32 @@ function Kings.newTextElement(window, tab, text)
 	newWindowElementTextTextLabel["Text"] = text;
 	newWindowElementTextTextLabel["BackgroundTransparency"] = 1;
 	newWindowElementTextTextLabel["Position"] = UDim2.new(0.040145985782146454, 0, 0.09500000298023224, 0);
-	
+
 	-- element functions
 	local function setText(text)
 		newWindowElementTextTextLabel["Text"] = text;
+	end
+
+	local function destroy()
+		newWindowElementText:Destroy()	
 	end
 	
 	local function getText()
 		return newWindowElementTextTextLabel["Text"];
 	end
-	
+
 	local function setOutlineColor(color)
 		newWindowElementTextUIStroke["Color"] = color;
 	end
-	
+
 	local function setBackgroundColor(color)
 		newWindowElementText["BackgroundColor3"] = color;
 	end
-	
+
 	local function setTransparency(integer) 
 		newWindowElementText["BackgroundTransparency"] = integer;
 	end
-	
+
 	return {
 		newWindowElementText;
 		setText = setText;
@@ -455,33 +457,34 @@ function Kings.newTextElement(window, tab, text)
 		setOutlineColor = setOutlineColor;
 		setBackgroundColor = setBackgroundColor;
 		setTransparency = setTransparency;
+		destroy = destroy;
 	}
 end
 
 function Kings.newButtonElement(window, tab, text, buttonType)
 	--window = window[1];
-	
+
 	local buttonIconId, buttonIconOffset, buttonIconSize, buttonIconColor;
-	
+
 	if buttonType == nil or buttonType == 0 then
 		buttonIconId = "rbxassetid://3926305904";
 		buttonIconOffset = Vector2.new(604, 764);
 		buttonIconSize = Vector2.new(36, 36);
 		buttonIconColor = Color3.fromRGB(126, 255, 163);
-		
+
 	elseif buttonType == 1 then
 		buttonIconId = "rbxassetid://3926305904";
 		buttonIconOffset = Vector2.new(644, 724);
 		buttonIconSize = Vector2.new(36, 36);
 		buttonIconColor = Color3.fromRGB(220, 80, 80);
-		
+
 	elseif buttonType == 2 then
 		buttonIconId = "rbxassetid://3926305904";
 		buttonIconOffset = Vector2.new(116, 4);
 		buttonIconSize = Vector2.new(24, 24);
 		buttonIconColor = Color3.fromRGB(206, 220, 53);
 	end
-	
+
 	local newWindowElementButton = Instance.new("Frame", window[1][tab]);
 	newWindowElementButton["BorderSizePixel"] = 0;
 	newWindowElementButton["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
@@ -490,7 +493,7 @@ function Kings.newButtonElement(window, tab, text, buttonType)
 	newWindowElementButton["BorderColor3"] = Color3.fromRGB(0, 0, 0);
 	newWindowElementButton["Position"] = UDim2.new(0.04333333298563957, 0, 0.0379403792321682, 0);
 	newWindowElementButton["Name"] = "windowElementButton";
-	
+
 	local newWindowElementButtonUIStroke = Instance.new("UIStroke", newWindowElementButton);
 	newWindowElementButtonUIStroke["Color"] = Color3.fromRGB(20, 20, 20);
 	newWindowElementButtonUIStroke["Thickness"] = 0.5099999904632568;
@@ -505,7 +508,7 @@ function Kings.newButtonElement(window, tab, text, buttonType)
 	newWindowElementButtonImage["ImageRectOffset"] = buttonIconOffset;
 	newWindowElementButtonImage["Position"] = UDim2.new(0.8722627758979797, 0, 0.17499999701976776, 0);
 	newWindowElementButtonImage["BackgroundTransparency"] = 1;
-	
+
 	local newWindowElementButtonButton = Instance.new("TextButton", newWindowElementButton);
 	newWindowElementButtonButton["TextWrapped"] = true;
 	newWindowElementButtonButton["BorderSizePixel"] = 0;
@@ -521,13 +524,17 @@ function Kings.newButtonElement(window, tab, text, buttonType)
 
 	local newWindowElementButtonUICorner = Instance.new("UICorner", newWindowElementButton);
 	newWindowElementButtonUICorner["CornerRadius"] = UDim.new(0, 7);
-	
+
 	-- element functions
 	local function onclick(func)
 		newWindowElementButtonButton.MouseButton1Click:connect(func)
 		newWindowElementButtonImage.MouseButton1Click:connect(func)
 	end
 	
+	local function destroy()
+		newWindowElementButton:Destroy()
+	end
+
 	local function setText(text)
 		newWindowElementButtonButton["Text"] = text;
 	end
@@ -547,16 +554,18 @@ function Kings.newButtonElement(window, tab, text, buttonType)
 	local function setTransparency(integer) 
 		newWindowElementButton["BackgroundTransparency"] = integer;
 	end	
-	
+
 	return {
 		newWindowElementButton;
 		onclick = onclick;
-		
+
 		setText = setText;
 		getText = getText;
 		setOutlineColor = setOutlineColor;
 		setBackgroundColor = setBackgroundColor;
 		setTransparency = setTransparency;
+		
+		destroy = destroy;
 	}
 end
 
@@ -582,7 +591,7 @@ function Kings.newCategory(window, tab, name)
 	newWindowCategoryTextLabel["BorderColor3"] = Color3.fromRGB(0, 0, 0);
 	newWindowCategoryTextLabel["Text"] = name;
 	newWindowCategoryTextLabel["BackgroundTransparency"] = 1;
-	
+
 	return {
 		newWindowCategory;
 	}
@@ -590,17 +599,17 @@ end
 
 function Kings.newSwitchElement(window, tab, text, state)
 	local stateColor, stateIcon, stateOffset;
-	
+
 	stateColor = Color3.fromRGB(116, 116, 116);
 	stateIcon = "rbxassetid://3926307971";
 	stateOffset = Vector2.new(804, 124);
-	
+
 	if state == true then
 		stateColor = Color3.fromRGB(118, 150, 255);
 		stateIcon = "rbxassetid://3926307971";
 		stateOffset = Vector2.new(764, 244);
 	end
-	
+
 	local newWindowElementSwitch = Instance.new("Frame", window[1][tab]);
 	newWindowElementSwitch["BorderSizePixel"] = 0;
 	newWindowElementSwitch["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
@@ -628,7 +637,7 @@ function Kings.newSwitchElement(window, tab, text, state)
 	newWindowElementSwitchTextLabel["BorderColor3"] = Color3.fromRGB(0, 0, 0);
 	newWindowElementSwitchTextLabel["Text"] = text;
 	newWindowElementSwitchTextLabel["BackgroundTransparency"] = 1;
-	
+
 	local newWindowElementSwitchState = Instance.new("ImageButton", newWindowElementSwitch);
 	newWindowElementSwitchState["ImageColor3"] = stateColor;
 	newWindowElementSwitchState["LayoutOrder"] = 20;
@@ -640,25 +649,25 @@ function Kings.newSwitchElement(window, tab, text, state)
 	newWindowElementSwitchState["Position"] = UDim2.new(0.8722627758979797, 0, 0.17499999701976776, 0);
 	newWindowElementSwitchState["BackgroundTransparency"] = 1;
 	newWindowElementSwitchState["Visible"] = true;
-	
+
 	-- element functions
 	local function switch()
 		if state == true then
 			state = false;
-			
+
 			newWindowElementSwitchState["ImageColor3"] = Color3.fromRGB(116, 116, 116);
 			newWindowElementSwitchState["Image"] = "rbxassetid://3926307971";
 			newWindowElementSwitchState["ImageRectOffset"] = Vector2.new(804, 124);
 		elseif state == false then
 			state = true;
-			
+
 			newWindowElementSwitchState["ImageColor3"] = Color3.fromRGB(118, 150, 255);
 			newWindowElementSwitchState["Image"] = "rbxassetid://3926307971";
 			newWindowElementSwitchState["ImageRectOffset"] = Vector2.new(764, 244);
 
 		end
 	end
-	
+
 	local function onclick(func)
 		newWindowElementSwitchTextLabel.MouseButton1Click:connect(func)
 		newWindowElementSwitchState.MouseButton1Click:connect(func)
@@ -683,7 +692,7 @@ function Kings.newSwitchElement(window, tab, text, state)
 	local function setTransparency(integer) 
 		newWindowElementSwitch["BackgroundTransparency"] = integer;
 	end	
-	
+
 	if state == true then
 		newWindowElementSwitchState["ImageColor3"] = Color3.fromRGB(118, 150, 255);
 		newWindowElementSwitchState["Image"] = "rbxassetid://3926307971";
@@ -693,14 +702,14 @@ function Kings.newSwitchElement(window, tab, text, state)
 		newWindowElementSwitchState["Image"] = "rbxassetid://3926307971";
 		newWindowElementSwitchState["ImageRectOffset"] = Vector2.new(804, 124);
 	end
-	
+
 	local function getState()
 		return state;
 	end
-	
+
 	local function setState(newState)
 		state = newState;
-		
+
 		if state == true then
 			newWindowElementSwitchState["ImageColor3"] = Color3.fromRGB(118, 150, 255);
 			newWindowElementSwitchState["Image"] = "rbxassetid://3926307971";
@@ -711,7 +720,7 @@ function Kings.newSwitchElement(window, tab, text, state)
 			newWindowElementSwitchState["ImageRectOffset"] = Vector2.new(804, 124);
 		end
 	end
-	
+
 	return {
 		newWindowElementSwitch;
 		onclick = onclick;
@@ -781,19 +790,23 @@ function Kings.newInputElement(window, tab, text, placeholder)
 
 	local newWindowElementInputUICorner = Instance.new("UICorner", newWindowElementInput);
 	newWindowElementInputUICorner["CornerRadius"] = UDim.new(0, 7);
-	
+
 	local function setInput(inp)
 		newWindowElementInputTextBox["Text"] = inp;
 	end
 	
+	local function destroy()
+		newWindowElementInput:Destroy()
+	end
+
 	local function getInput()
 		return newWindowElementInputTextBox["Text"];
 	end
-	
+
 	local function setText(text)
 		newWindowElementInputTextLabel["Text"] = text;
 	end
-	
+
 	local function setOutlineColor(color)
 		newWindowElementInputUIStroke["Color"] = color;
 	end
@@ -805,16 +818,17 @@ function Kings.newInputElement(window, tab, text, placeholder)
 	local function setTransparency(integer) 
 		newWindowElementInput["BackgroundTransparency"] = integer;
 	end	
-	
+
 	return {
 		newWindowElementInput;
-		
+
 		setInput = setInput;
 		getInput = getInput;
 		setText = setText;
 		setOutlineColor = setOutlineColor;
 		setBackgroundColor = setBackgroundColor;
 		setTransparency = setTransparency;
+		destroy = destroy;
 	}
 end
 
@@ -832,7 +846,7 @@ function Kings.newTab(window, name)
 	newWindowContent["Position"] = UDim2.new(0, 0, 0.07750000059604645, 0);
 	newWindowContent["Name"] = name;
 	newWindowContent["Visible"] = false;
-	
+
 	local function automaticHeight()
 		local canvSize = 0;
 
@@ -843,11 +857,11 @@ function Kings.newTab(window, name)
 		end
 
 		newWindowContent.CanvasSize = UDim2.new(0, 0, 0, canvSize+80)
-		wait(5)
+		task.wait(5)
 		automaticHeight()
 	end
 	spawn(automaticHeight);
-	
+
 	local function clear()
 		for i, v in pairs(newWindowContent:GetChildren()) do
 			if v:IsA("Frame") then 
@@ -863,16 +877,21 @@ function Kings.newTab(window, name)
 	newWindowContentUIListLayout["HorizontalAlignment"] = Enum.HorizontalAlignment.Center;
 	newWindowContentUIListLayout["Padding"] = UDim.new(0, 7);
 	newWindowContentUIListLayout["SortOrder"] = Enum.SortOrder.LayoutOrder;	
+
+	local function destroy()
+		newWindowContent:Destroy()
+	end
 	
 	return {
 		newWindowContent;
 		clear = clear;
+		destroy = destroy;
 	}
 end
 
 function Kings.newSidebarOption(window, tabToView, text, icon)
 	window = window[1];
-	
+
 	local newWindowSidebarTab = Instance.new("TextButton", window["windowSidebar"]["Tabs"]);
 	newWindowSidebarTab["BorderSizePixel"] = 0;
 	newWindowSidebarTab["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
@@ -892,10 +911,10 @@ function Kings.newSidebarOption(window, tabToView, text, icon)
 				v.Visible = false
 			end
 		end
-		
+
 		tabToView[1].Visible = true;
 	end)
-	
+
 
 	local newWindowSidebarTabUnderline = Instance.new("Frame", newWindowSidebarTab);
 	newWindowSidebarTabUnderline["BorderSizePixel"] = 0;
@@ -905,12 +924,12 @@ function Kings.newSidebarOption(window, tabToView, text, icon)
 	newWindowSidebarTabUnderline["Position"] = UDim2.new(0.03846153989434242, 0, 1, 0);
 	newWindowSidebarTabUnderline["Name"] = [[underline]];
 	newWindowSidebarTabUnderline["ZIndex"] = 2;
-	
-	
-	
+
+
+
 	local newWindowSidebarTabIcon = Instance.new("ImageButton", newWindowSidebarTab);
 	newWindowSidebarTabIcon["ImageTransparency"] = 0.10000000149011612;
-	
+
 	if icon == nil then
 		newWindowSidebarTabIcon["Image"] = [[rbxassetid://3926305904]];
 		newWindowSidebarTabIcon["ImageRectOffset"] = Vector2.new(964, 204);
@@ -922,24 +941,29 @@ function Kings.newSidebarOption(window, tabToView, text, icon)
 			newWindowSidebarTabIcon["ImageRectSize"] = icon[3];
 		end
 	end
-	
-	
+
+
 	newWindowSidebarTabIcon["Size"] = UDim2.new(0, 25, 0, 25);
 	newWindowSidebarTabIcon["Name"] = [[home]];
 	newWindowSidebarTabIcon["Position"] = UDim2.new(0.04615384712815285, 0, 0.15000000596046448, 0);
 	newWindowSidebarTabIcon["BackgroundTransparency"] = 1;
 	newWindowSidebarTabIcon["ZIndex"] = 2;
-	
-	
-	
+
+
+
 	local function onclick(func)
 		newWindowSidebarTab.MouseButton1Click:connect(func)
 		newWindowSidebarTabIcon.MouseButton1Click:connect(func)
 	end
 	
+	local function destroy()
+		newWindowSidebarTab:Destroy()
+	end
+
 	return {
 		newWindowSidebarTab;
 		onclick = onclick;
+		destroy = destroy;
 	}
 end
 
@@ -990,7 +1014,7 @@ function Kings.newSliderElement(window, tab, text, defaultValue)
 	newWindowElementSliderSlider["BorderColor3"] = Color3.fromRGB(0, 0, 0);
 	newWindowElementSliderSlider["Position"] = UDim2.new(0.06526785343885422, 0, 0.6976191401481628, 0);
 	newWindowElementSliderSlider["Name"] = "slider";
-	
+
 	local newWindowElementSliderSliderOutline = Instance.new("Frame", newWindowElementSlider);
 	newWindowElementSliderSliderOutline["BorderSizePixel"] = 0;
 	newWindowElementSliderSliderOutline["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
@@ -999,7 +1023,7 @@ function Kings.newSliderElement(window, tab, text, defaultValue)
 	newWindowElementSliderSliderOutline["BorderColor3"] = Color3.fromRGB(0, 0, 0);
 	newWindowElementSliderSliderOutline["Position"] = UDim2.new(0.06526785343885422, 0, 0.6976191401481628, 0);
 	newWindowElementSliderSliderOutline["Name"] = [[sliderOutline]];
-	
+
 	local minSliderValue = 0
 	local maxSliderValue = 100
 
@@ -1008,10 +1032,10 @@ function Kings.newSliderElement(window, tab, text, defaultValue)
 
 	local sliderWidth = newWindowElementSliderSliderOutline.AbsoluteSize.X;
 	local val = 0;
-	
+
 	local title = newWindowElementSliderTextLabel["Text"];
 	newWindowElementSliderTextLabel["Text"] = title.." ["..defaultValue.."]";
-	
+
 	newWindowElementSlider.MouseButton1Down:Connect(function()
 		dragging = true
 		inputChangedConnection = game:GetService("UserInputService").InputChanged:Connect(function(input)
@@ -1024,7 +1048,7 @@ function Kings.newSliderElement(window, tab, text, defaultValue)
 				newWindowElementSliderSlider["Size"] = UDim2.new(0, sliderPosition, 0, 8);
 			end
 		end)
-		end)
+	end)
 
 	newWindowElementSlider.MouseButton1Up:Connect(function()
 		dragging = false
@@ -1032,39 +1056,39 @@ function Kings.newSliderElement(window, tab, text, defaultValue)
 			inputChangedConnection:Disconnect()
 		end
 	end)
-	
+
 	local function getValue()
 		return val;
 	end
-	
+
 	local function minValue(val)
 		minSliderValue = val;
 	end
-	
+
 	local function maxValue(val)
 		maxSliderValue = val;
 	end
-	
+
 	local newWindowElementSliderSliderOutlineUICorner = Instance.new("UICorner", newWindowElementSliderSliderOutline);
 	newWindowElementSliderSliderOutlineUICorner["CornerRadius"] = UDim.new(0, 7);
-	
+
 	local newWindowElementSliderSliderOutlineUIStroke = Instance.new("UIStroke", newWindowElementSliderSliderOutline);
 	newWindowElementSliderSliderOutlineUIStroke["Color"] = Color3.fromRGB(255, 161, 98);
 	newWindowElementSliderSliderOutlineUIStroke["Thickness"] = 0.5099999904632568;
-	
+
 	local newWindowElementSliderSliderUICorner = Instance.new("UICorner", newWindowElementSliderSlider);
 	newWindowElementSliderSliderUICorner["CornerRadius"] = UDim.new(0, 7);
 
 	local newWindowElementSliderSliderUIStroke = Instance.new("UIStroke", newWindowElementSliderSlider);
 	newWindowElementSliderSliderUIStroke["Color"] = Color3.fromRGB(255, 161, 98);
 	newWindowElementSliderSliderUIStroke["Thickness"] = 0.5099999904632568;
-	
+
 	return {
 		newWindowElementSlider;
 		getValue = getValue;
 		minValue = minValue;
 		maxValue = maxValue;
-		
+
 	}
 end
 
