@@ -152,3 +152,9 @@ input_name[1]["TextBox"].TextScaled = true -- this will set the TextScaled prope
 print(input_name)
 -- in this case, [1] is the actual object itself in game.Workspace
 ```
+
+**Destroy elements:**
+```lua
+local newLabel = Kings.newTextElement(firstWindow, "main", "Hello World!");
+newLabel.destroy();
+```
