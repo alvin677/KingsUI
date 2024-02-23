@@ -173,7 +173,7 @@ function Kings.newWindow(windowName, windowSettings)
 
 		for i, v in pairs(newWindowContent:GetChildren()) do
 			if v:IsA("Frame") then
-				canvSize = canvSize + v.Size.Y.Offset;
+				canvSize = canvSize + v.Size.Y.Offset + 7;
 			end
 		end
 
