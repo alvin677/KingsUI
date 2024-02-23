@@ -140,7 +140,9 @@ local newTabOp2 = Kings.newSidebarOption(firstWindow, newTab, "Scripts", {"rbxas
 ```lua
 -- .newSliderElement(window, tab, text, value)
 Kings.newSliderElement(firstWindow, "home", "coolest slider", 50);
-Kings.newSliderElement(firstWindow, "home", "another cool one", 0).maxValue(1);
+local slide = Kings.newSliderElement(firstWindow, "home", "another cool one", 0).maxValue(1);
+
+print(slide.getValue())
 ```
 
 **Manually edit elements:**
