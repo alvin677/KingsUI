@@ -30,7 +30,6 @@ local newBtn = Kings.newButtonElement(gg, "main", "press me!!");
 
 local anotherWindow = Kings.newWindow("player list", {
 	["windowColor"] = {150, 150, 150},
-	["noCloseButton"] = true,
 	["draggable"] = true,
 	["hide"] = true,
 	--["windowSize"] = UDim2.new(0, 600, 0, 400),
