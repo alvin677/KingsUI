@@ -13,7 +13,7 @@ https://github.com/alvin677/KingsUI/assets/112005397/4425bb5a-33c3-4b93-903a-320
 added ["minimizeButton"] = true
 
 
-
+# Kings UI
 I am very aware that there could be bugs because of scaling and other stuff. If you find anything, please report to me on Discord: cedric0591 <br />
 I recommend you joining our Discord server for help with coding: https://discord.gg/altgen
 
