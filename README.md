@@ -10,7 +10,6 @@ https://github.com/alvin677/KingsUI/assets/112005397/4425bb5a-33c3-4b93-903a-320
 
 # IMPORTANT UPDATES LOG
 ["noCloseButton"] = false has changed to ["closeButton"] = true
-added ["minimizeButton"] = true
 
 
 # Kings UI
