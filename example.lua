@@ -72,7 +72,7 @@ end)
 
 local gggg = Kings.newWindow("sigma2", {
 	["windowColor"] = {255, 10, 10},
-	["noCloseButton"] = false
+	["closeButton"] = true
 });
 gggg.setWindowLight(255);
 
