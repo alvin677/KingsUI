@@ -177,7 +177,7 @@ function Kings.newWindow(windowName, windowSettings)
 			end
 		end
 
-		newWindowContent.CanvasSize = UDim2.new(0, 0, 0, canvSize+80)
+		newWindowContent.CanvasSize = UDim2.new(0, 0, 0, canvSize)
 		task.wait(5)
 		automaticHeight()
 	end
@@ -852,11 +852,11 @@ function Kings.newTab(window, name)
 
 		for i, v in pairs(newWindowContent:GetChildren()) do
 			if v:IsA("Frame") then
-				canvSize = canvSize + v.Size.Y.Offset;
+				canvSize = canvSize + v.Size.Y.Offset + 7;
 			end
 		end
 
-		newWindowContent.CanvasSize = UDim2.new(0, 0, 0, canvSize+80)
+		newWindowContent.CanvasSize = UDim2.new(0, 0, 0, canvSize)
 		task.wait(5)
 		automaticHeight()
 	end
