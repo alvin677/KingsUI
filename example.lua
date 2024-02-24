@@ -3,7 +3,7 @@ local Kings = require(script.Parent.KingsLib)
 
 local gg = Kings.newWindow("sigma", {
 	["windowColor"] = {10, 10, 255},
-	["noCloseButton"] = false,
+	["closeButton"] = true,
 	["draggable"] = true,
 	["hide"] = false,
 	["showShadows"] = true,
